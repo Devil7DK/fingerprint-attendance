@@ -16,8 +16,6 @@ MCUFRIEND_kbv tft;
 #include <SD.h>
 #include <SPI.h>
 
-#include "bmp.h"
-
 #define SD_CS 10
 
 // Colors
@@ -30,8 +28,13 @@ MCUFRIEND_kbv tft;
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
-// Buttons
-Adafruit_GFX_Button btn_enroll, btn_mark;
+// Custom Headers
+#include "bmp.h"
+#include "objects.h"
+#include "Vector.h"
+
+Vector<Person*> persons;
+boolean loaded=false;
 
 int pixel_x, pixel_y;     //Touch_getXY() updates global vars
 bool Touch_getXY(void)
@@ -52,8 +55,18 @@ bool Touch_getXY(void)
 }
 
 void displayHome() {
+  Adafruit_GFX_Button btn_enroll, btn_mark;
+  
+  btn_enroll.initButton(&tft,  120, 248, 150, 40, BLACK, WHITE, BLACK, "ENROLL", 2);
+  btn_mark.initButton(&tft, 120, 290, 150, 40, BLACK, WHITE, BLACK, "MARK", 2);
+  
   tft.fillScreen(WHITE);
   bmpDraw(tft, "logo.bmp", 20, 10);
+
+  if (!loaded) {    
+    readData(persons);
+    loaded=true;
+  }
   
   btn_enroll.drawButton(false);
   btn_mark.drawButton(false);
@@ -96,12 +109,8 @@ void setup() {
     Serial.println("SD Card: Initialization failed!");
     return;
   }
-
-  // Initialize Buttons
-  btn_enroll.initButton(&tft,  120, 248, 150, 40, BLACK, WHITE, BLACK, "ENROLL", 2);
-  btn_mark.initButton(&tft, 120, 290, 150, 40, BLACK, WHITE, BLACK, "MARK", 2);
 }
 
-void loop() {
+void loop() {  
   displayHome();
 }
