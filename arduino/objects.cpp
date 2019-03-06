@@ -5,6 +5,19 @@
 
 #include "objects.h"
 
+String readPrefix() {
+  File prefixFile;
+  prefixFile = SD.open("prefix");
+  if (prefixFile) {
+    while (prefixFile.available()) {
+      return prefixFile.readStringUntil('\n');
+    }
+  } else {
+    Serial.println("Unable to open prefix file..!");
+    return "";
+  }
+}
+
 void readData(Vector<Person*> *persons) {
   File dataFile;
   String buffer;
@@ -16,6 +29,7 @@ void readData(Vector<Person*> *persons) {
       buffer = dataFile.readStringUntil('\n');
 
       int id = -1;
+      String regno = "";
       String name = "";
       int type = 0;
       int fingerprint = -1;
@@ -31,19 +45,22 @@ void readData(Vector<Person*> *persons) {
             id = atoi(str);
             break;
           case 1:
-            name = str;
+            regno = str;
             break;
           case 2:
-            type = atoi(str);
+            name = str;
             break;
           case 3:
+            type = atoi(str);
+            break;
+          case 4:
             fingerprint = atoi(str);
             break;
         }
         index += 1;
       }
       if (id > 0) {
-        Person* person = new Person(id, name, type, fingerprint);
+        Person* person = new Person(id, regno, name, type, fingerprint);
         persons->PushBack(person);
       }
     }

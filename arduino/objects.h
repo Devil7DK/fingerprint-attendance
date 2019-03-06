@@ -8,6 +8,7 @@ enum types {Staff, Student};
 class Person {
   public:
     int id;
+    String regno;
     String name;
     enum types type;
     int fingerprint;
@@ -18,8 +19,9 @@ class Person {
     type=Staff;
   }
   
-  Person(int id_, String name_, int type_, int fingerprint_) {
+  Person(int id_,String regno_, String name_, int type_, int fingerprint_) {
     id=id_;
+    regno=regno_;
     name=name_;
     switch(type_) {
       case 0:
@@ -33,4 +35,5 @@ class Person {
   }
 };
 
+String readPrefix();
 void readData(Vector<Person*> *persons);
