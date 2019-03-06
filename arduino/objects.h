@@ -33,4 +33,4 @@ class Person {
   }
 };
 
-void readData(Vector<Person*> persons);
+void readData(Vector<Person*> *persons);

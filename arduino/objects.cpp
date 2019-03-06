@@ -5,7 +5,7 @@
 
 #include "objects.h"
 
-void readData(Vector<Person*> persons) {
+void readData(Vector<Person*> *persons) {
   File dataFile;
   String buffer;
 
@@ -44,12 +44,12 @@ void readData(Vector<Person*> persons) {
       }
       if (id > 0) {
         Person* person = new Person(id, name, type, fingerprint);
-        persons.PushBack(person);
+        persons->PushBack(person);
       }
     }
     dataFile.close();
     Serial.print("Successfully parsed ");
-    Serial.print(persons.Size());
+    Serial.print(persons->Size());
     Serial.println(" persons...");
   } else {
     Serial.println("Unable to open persons file..!");
