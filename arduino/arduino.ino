@@ -27,6 +27,8 @@ MCUFRIEND_kbv tft;
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
+#define GREY      0xCE79
+#define LIGHTGREY 0xDEDB
 
 // Custom Headers
 #include "bmp.h"
@@ -34,6 +36,7 @@ MCUFRIEND_kbv tft;
 #include "Vector.h"
 
 Vector<Person*> persons;
+String prefix;
 boolean loaded=false;
 
 boolean display_enroll=false;
@@ -66,7 +69,10 @@ void displayHome() {
   tft.fillScreen(WHITE);
   bmpDraw(tft, "logo.bmp", 20, 10);
 
-  if (!loaded) {    
+  if (!loaded) {
+    prefix = readPrefix();
+    Serial.print("Prefix:");
+    Serial.println(prefix);
     readData(&persons);
     loaded=true;
   }
@@ -95,45 +101,92 @@ void displayHome() {
   }
 }
 
-void displayEnroll() {
-  Adafruit_GFX_Button btn_previous, btn_enroll, btn_next;
+void writePersonInfo() {
+  tft.fillRect(10, 50, 220, 220, WHITE);
 
+  Person* person = persons[index_enroll];
+
+  tft.setCursor(15, 55);
+  tft.setTextColor(GREY);
+  tft.print("Regno:");
+  tft.setCursor(15, 75);
+  tft.setTextColor(BLACK);
+  tft.print("  ");
+  tft.print(prefix);
+  tft.print(person->regno);
+
+  tft.setCursor(15, 105);
+  tft.setTextColor(GREY);
+  tft.print("Name:");
+  tft.setCursor(15, 125);
+  tft.setTextColor(BLACK);
+  tft.print("  ");
+  tft.print(person->name);
+
+  tft.setCursor(15, 155);
+  tft.setTextColor(GREY);
+  tft.print("Enrolled:");
+  tft.setCursor(15, 175);
+  tft.setTextColor(BLACK);
+  tft.print("  ");
+  if (person->fingerprint > 0)
+    tft.print("YES");
+  else
+    tft.print("NO");
+}
+
+void displayEnroll() {
+  Adafruit_GFX_Button btn_back, btn_previous, btn_enroll, btn_next;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
   btn_previous.initButton(&tft, 25, 300, 50, 40, BLACK, WHITE, BLACK, "<", 2);
   btn_enroll.initButton(&tft,  120, 300, 140, 40, BLACK, WHITE, BLACK, "ENROLL", 2);  
   btn_next.initButton(&tft, 215, 300, 50, 40, BLACK, WHITE, BLACK, ">", 2);
   
   tft.fillScreen(WHITE);
 
+  btn_back.drawButton(false);
   btn_previous.drawButton(false);
   btn_enroll.drawButton(false);
   btn_next.drawButton(false);
 
+  index_enroll = 0;
+  writePersonInfo();
+
   while (true) {
     bool down = Touch_getXY();
-    
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
     btn_previous.press(down && btn_previous.contains(pixel_x, pixel_y));
     btn_enroll.press(down && btn_enroll.contains(pixel_x, pixel_y));
     btn_next.press(down && btn_next.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
     if (btn_previous.justReleased())
         btn_previous.drawButton();
     if (btn_enroll.justReleased())
         btn_enroll.drawButton();
     if (btn_next.justReleased())
         btn_next.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);        
+        break;
+    }
     if (btn_previous.justPressed() && index_enroll > 0) {
         index_enroll -= 1;
         btn_previous.drawButton(true);
-        break;
+        writePersonInfo();
     }
     if (btn_enroll.justPressed()) {
         btn_enroll.drawButton(true);
-        display_enroll = true;
         break;
     }
     if (btn_next.justPressed() && index_enroll < persons.Size() - 1) {
-        index_enroll -= 1;
+        index_enroll += 1;
         btn_next.drawButton(true);
-        break;
+        writePersonInfo();
     }
   }
 }
