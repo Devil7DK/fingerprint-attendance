@@ -36,6 +36,9 @@ MCUFRIEND_kbv tft;
 Vector<Person*> persons;
 boolean loaded=false;
 
+boolean display_enroll=false;
+int index_enroll=0;
+
 int pixel_x, pixel_y;     //Touch_getXY() updates global vars
 bool Touch_getXY(void)
 {
@@ -64,7 +67,7 @@ void displayHome() {
   bmpDraw(tft, "logo.bmp", 20, 10);
 
   if (!loaded) {    
-    readData(persons);
+    readData(&persons);
     loaded=true;
   }
   
@@ -82,10 +85,54 @@ void displayHome() {
         btn_mark.drawButton();
     if (btn_enroll.justPressed()) {
         btn_enroll.drawButton(true);
+        display_enroll = true;
         break;
     }
     if (btn_mark.justPressed()) {
         btn_mark.drawButton(true);
+        break;
+    }
+  }
+}
+
+void displayEnroll() {
+  Adafruit_GFX_Button btn_previous, btn_enroll, btn_next;
+
+  btn_previous.initButton(&tft, 25, 300, 50, 40, BLACK, WHITE, BLACK, "<", 2);
+  btn_enroll.initButton(&tft,  120, 300, 140, 40, BLACK, WHITE, BLACK, "ENROLL", 2);  
+  btn_next.initButton(&tft, 215, 300, 50, 40, BLACK, WHITE, BLACK, ">", 2);
+  
+  tft.fillScreen(WHITE);
+
+  btn_previous.drawButton(false);
+  btn_enroll.drawButton(false);
+  btn_next.drawButton(false);
+
+  while (true) {
+    bool down = Touch_getXY();
+    
+    btn_previous.press(down && btn_previous.contains(pixel_x, pixel_y));
+    btn_enroll.press(down && btn_enroll.contains(pixel_x, pixel_y));
+    btn_next.press(down && btn_next.contains(pixel_x, pixel_y));
+    if (btn_previous.justReleased())
+        btn_previous.drawButton();
+    if (btn_enroll.justReleased())
+        btn_enroll.drawButton();
+    if (btn_next.justReleased())
+        btn_next.drawButton();
+    if (btn_previous.justPressed() && index_enroll > 0) {
+        index_enroll -= 1;
+        btn_previous.drawButton(true);
+        break;
+    }
+    if (btn_enroll.justPressed()) {
+        btn_enroll.drawButton(true);
+        display_enroll = true;
+        break;
+    }
+    if (btn_next.justPressed() && index_enroll < persons.Size() - 1) {
+        index_enroll -= 1;
+        btn_next.drawButton(true);
         break;
     }
   }
@@ -113,4 +160,9 @@ void setup() {
 
 void loop() {  
   displayHome();
+
+  if (display_enroll) {
+    display_enroll = false;
+    displayEnroll();
+  }
 }
