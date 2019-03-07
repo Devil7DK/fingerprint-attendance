@@ -30,10 +30,81 @@ MCUFRIEND_kbv tft;
 #define GREY      0xCE79
 #define LIGHTGREY 0xDEDB
 
+// Fingerprint
+#include <Adafruit_Fingerprint.h>
+
+SoftwareSerial fpSerial(A14, A15);
+
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&fpSerial);
+
 // Custom Headers
 #include "bmp.h"
 #include "objects.h"
 #include "Vector.h"
+
+// Fingerprint Icon
+static const uint8_t fp_icon [] PROGMEM = {
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x3f,0xc0,0x0,0x0,0x0,
+0x0,0x0,0x3,0xff,0xf8,0x0,0x0,0x0,
+0x0,0x0,0x7,0xff,0xfe,0x0,0x0,0x0,
+0x0,0x0,0x1f,0xc0,0x7f,0x80,0x0,0x0,
+0x0,0x0,0x3e,0x0,0x7,0xc0,0x0,0x0,
+0x0,0x0,0x7c,0x0,0x3,0xe0,0x0,0x0,
+0x0,0x0,0xfd,0xff,0x81,0xf0,0x0,0x0,
+0x0,0x0,0xff,0xff,0xe0,0xf0,0x0,0x0,
+0x0,0x1,0xff,0xff,0xf8,0x78,0x0,0x0,
+0x0,0x1,0xff,0x80,0x7c,0x38,0x0,0x0,
+0x0,0x3,0xfc,0x0,0xe,0x3c,0x0,0x0,
+0x0,0x3,0xf0,0x0,0x7,0x1c,0x0,0x0,
+0x0,0x7,0xc0,0x7f,0x83,0x8e,0x0,0x0,
+0x0,0x7,0x83,0xff,0xe0,0xe,0x0,0x0,
+0x0,0x7,0xf,0xff,0xf8,0xf,0x0,0x0,
+0x0,0x6,0x1f,0x80,0xfc,0x7,0x0,0x0,
+0x0,0x4,0x7e,0x0,0x3f,0x7,0x0,0x0,
+0x0,0x0,0xf8,0x0,0xf,0x7,0x0,0x0,
+0x0,0x0,0xf0,0x3e,0x7,0x87,0x0,0x0,
+0x0,0x1,0xe1,0xff,0x83,0x83,0x80,0x0,
+0x0,0x3,0xc3,0xff,0xc3,0xc3,0x80,0x0,
+0x0,0x3,0xc7,0xc3,0xe1,0xc3,0x80,0x0,
+0x0,0x3,0x8f,0x0,0xf1,0xe3,0x80,0x0,
+0x0,0x7,0x1e,0x0,0x78,0xe3,0x80,0x0,
+0x0,0x7,0x1e,0x3c,0x38,0xe3,0x80,0x0,
+0x0,0x7,0x1c,0x7e,0x38,0xe3,0x80,0x0,
+0x0,0xf,0x1c,0x7f,0x38,0xe3,0x80,0x0,
+0x0,0xe,0x3c,0xf7,0x38,0x71,0x80,0x0,
+0x0,0xe,0x38,0xe7,0x38,0x71,0xc0,0x0,
+0x0,0xe,0x38,0xe7,0x38,0x71,0xc0,0x0,
+0x0,0xe,0x38,0xe7,0x38,0x73,0xc0,0x0,
+0x0,0xe,0x38,0xe3,0x98,0xe3,0xc0,0x0,
+0x0,0xe,0x38,0xe3,0xb8,0xe3,0x80,0x0,
+0x0,0x0,0x38,0xe3,0xf8,0xe3,0x80,0x0,
+0x0,0x0,0x38,0xe3,0xf8,0xe3,0x80,0x0,
+0x0,0x0,0x3c,0xf1,0xf1,0xe3,0x80,0x0,
+0x0,0x6,0x1c,0x70,0x1,0xc7,0x80,0x0,
+0x0,0xe,0x1c,0x78,0x3,0xc7,0x80,0x0,
+0x0,0xf,0x1c,0x3e,0x7,0x87,0x0,0x0,
+0x0,0xf,0x1e,0x3f,0xff,0x8f,0x0,0x0,
+0x0,0xf,0x1e,0x1f,0xff,0x1f,0x0,0x0,
+0x0,0xf,0xf,0x7,0xfc,0x3e,0x0,0x0,
+0x0,0x7,0x87,0x80,0x0,0x7c,0x0,0x0,
+0x0,0x7,0x87,0xe0,0x0,0xfc,0x0,0x0,
+0x0,0x3,0xc3,0xf8,0x7,0xf8,0x0,0x0,
+0x0,0x3,0xe1,0xff,0xff,0xe1,0x0,0x0,
+0x0,0x1,0xe0,0x7f,0xff,0x83,0x0,0x0,
+0x0,0x1,0xf8,0xf,0xfe,0x7,0x0,0x0,
+0x0,0x0,0xfc,0x0,0x0,0xe,0x0,0x0,
+0x0,0x0,0x3f,0x0,0x0,0x3c,0x0,0x0,
+0x0,0x0,0x1f,0xe0,0x1,0xf8,0x0,0x0,
+0x0,0x0,0x7,0xff,0xff,0xf0,0x0,0x0,
+0x0,0x0,0x1,0xff,0xff,0xc0,0x0,0x0,
+0x0,0x0,0x0,0x1f,0xfc,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0
+};
 
 Vector<Staff*> staffs;
 Vector<Student*> students;
@@ -44,6 +115,8 @@ boolean loaded = false;
 boolean display_enroll = false;
 enum types type_enroll = TStudent;
 int index_enroll = 0;
+
+int fingerprintID = 0;
 
 int pixel_x, pixel_y;     //Touch_getXY() updates global vars
 bool Touch_getXY(void)
@@ -227,15 +300,16 @@ void displayEnroll() {
   btn_previous.initButton(&tft, 25, 300, 50, 40, BLACK, WHITE, BLACK, "<", 2);
   btn_enroll.initButton(&tft,  120, 300, 140, 40, BLACK, WHITE, BLACK, "ENROLL", 2);  
   btn_next.initButton(&tft, 215, 300, 50, 40, BLACK, WHITE, BLACK, ">", 2);
-  
+  index_enroll = 0;
+
+DISPENROLL:
   tft.fillScreen(WHITE);
 
   btn_back.drawButton(false);
   btn_previous.drawButton(false);
   btn_enroll.drawButton(false);
   btn_next.drawButton(false);
-
-  index_enroll = 0;
+  
   writePersonInfo();
 
   while (true) {
@@ -266,6 +340,8 @@ void displayEnroll() {
     }
     if (btn_enroll.justPressed()) {
         btn_enroll.drawButton(true);
+        displayEnrollFP();
+        goto DISPENROLL;
         break;
     }
     if (btn_next.justPressed()) {
@@ -287,6 +363,257 @@ void displayEnroll() {
   }
 }
 
+void writeFPEnrollInfo() {
+  tft.fillRect(10, 50, 220, 100, WHITE);
+
+  String name = "";
+  fingerprintID = 0;  
+
+  switch(type_enroll) {
+    case TStudent: {
+      Student *student = students[index_enroll];
+      name = student->name;
+      fingerprintID = student->regno.toInt() + 100;
+      break;
+    } case TStaff: {
+      Staff *staff = staffs[index_enroll];
+      name = staff->name;
+      fingerprintID = staff->id + 500;
+      break;
+    }
+  }
+
+  tft.setCursor(15, 55);
+  tft.setTextColor(GREY);
+  tft.print("Fingerprint ID:");
+  tft.setCursor(15, 75);
+  tft.setTextColor(BLACK);
+  tft.print("  ");
+  tft.print(fingerprintID);
+  
+  tft.setCursor(15, 105);
+  tft.setTextColor(GREY);
+  tft.print("Name:");
+  tft.setCursor(15, 125);
+  tft.setTextColor(BLACK);
+  tft.print("  ");
+  tft.print(name);
+}
+
+void showEnrollFPIcon(String msg, uint16_t color) {
+  tft.fillRect(10, 155, 220, 155, WHITE);
+  tft.drawRect(56, 155, 128, 120, BLACK);
+  tft.setCursor(70, 165);
+  tft.setTextColor(RED); 
+  tft.setTextSize(2);
+  tft.print("FP ENROLL");
+
+  tft.setCursor(15, 290);
+  tft.setTextColor(color); 
+  tft.setTextSize(2);
+  tft.print(msg);
+
+  tft.drawBitmap(86, 185, fp_icon, 60, 60, color);
+  delay(2000);
+}
+
+void displayEnrollFP() {
+  Adafruit_GFX_Button btn_back;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  
+  tft.fillScreen(WHITE);
+
+  btn_back.drawButton(false);
+
+  writeFPEnrollInfo();
+
+  boolean writeicon = true;
+  int p = -1;
+  while (true) {
+ENROLLLOOP:
+    if (writeicon) {
+      showEnrollFPIcon(String("   Place finger"), BLUE);
+      writeicon = false;
+    }
+    bool down = Touch_getXY();
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);        
+        break;
+    }
+
+    p = finger.getImage();
+    switch (p) {
+    case FINGERPRINT_OK:
+      Serial.println("Image taken");
+      break;
+    case FINGERPRINT_NOFINGER:
+      break;
+    case FINGERPRINT_PACKETRECIEVEERR:
+      Serial.println("Communication error");
+      break;
+    case FINGERPRINT_IMAGEFAIL:
+      Serial.println("Imaging error");
+      break;
+    default:
+      Serial.println("Unknown error");
+      break;
+    }
+
+    if (p != FINGERPRINT_OK) {
+      goto ENROLLLOOP;
+    }
+
+    p = finger.image2Tz(1);
+    switch (p) {
+      case FINGERPRINT_OK:
+        Serial.println("Image converted");
+        break;
+      case FINGERPRINT_IMAGEMESS:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Image too messy");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_PACKETRECIEVEERR:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Communication error");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_FEATUREFAIL:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Could not find fingerprint features");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_INVALIDIMAGE:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Could not find fingerprint features");
+        writeicon = true;
+        goto ENROLLLOOP;
+      default:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Unknown error");
+        writeicon = true;
+        goto ENROLLLOOP;
+    }
+
+    showEnrollFPIcon(String("  Remove finger"), GREEN);
+    p = 0;
+    while (p != FINGERPRINT_NOFINGER) {
+      p = finger.getImage();
+    }
+    
+    p = -1;
+    showEnrollFPIcon(String("Place finger again"), BLUE);
+    while (p != FINGERPRINT_OK) {
+      p = finger.getImage();
+      switch (p) {
+        case FINGERPRINT_OK:
+          Serial.println("Image taken");
+          break;
+        case FINGERPRINT_NOFINGER:
+          break;
+        case FINGERPRINT_PACKETRECIEVEERR:
+          Serial.println("Communication error");
+          break;
+        case FINGERPRINT_IMAGEFAIL:
+          Serial.println("Imaging error");
+          break;
+        default:
+          Serial.println("Unknown error");
+          break;
+      }
+    }
+    
+    p = finger.image2Tz(2);
+    switch (p) {
+      case FINGERPRINT_OK:
+        Serial.println("Image converted");
+        break;
+      case FINGERPRINT_IMAGEMESS:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Image too messy");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_PACKETRECIEVEERR:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Communication error");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_FEATUREFAIL:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Could not find fingerprint features");
+        writeicon = true;
+        goto ENROLLLOOP;
+      case FINGERPRINT_INVALIDIMAGE:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Could not find fingerprint features");
+        writeicon = true;
+        goto ENROLLLOOP;
+      default:
+        showEnrollFPIcon(String("      ERROR"), RED);
+        Serial.println("Unknown error");
+        writeicon = true;
+        goto ENROLLLOOP;
+    }
+    
+    // OK converted!
+    Serial.print("Creating model for #");  Serial.println(fingerprintID);
+  
+    p = finger.createModel();
+    if (p == FINGERPRINT_OK) {
+      showEnrollFPIcon(String("  Prints matched!"), GREEN);
+    } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Communication error");
+      writeicon = true;
+      goto ENROLLLOOP;
+    } else if (p == FINGERPRINT_ENROLLMISMATCH) {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Fingerprints did not match");
+      writeicon = true;
+      goto ENROLLLOOP;
+    } else {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Unknown error");
+      writeicon = true;
+      goto ENROLLLOOP;
+    }   
+  
+    p = finger.storeModel(fingerprintID);
+    if (p == FINGERPRINT_OK) {
+      showEnrollFPIcon(String("     Stored!"), GREEN);
+    } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Communication error");
+      writeicon = true;
+      goto ENROLLLOOP;
+    } else if (p == FINGERPRINT_BADLOCATION) {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Could not store in that location");
+      writeicon = true;
+      goto ENROLLLOOP;
+    } else if (p == FINGERPRINT_FLASHERR) {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Error writing to flash");
+      writeicon = true;
+      goto ENROLLLOOP;
+    } else {
+      showEnrollFPIcon(String("      ERROR"), RED);
+      Serial.println("Unknown error");
+      writeicon = true;
+      goto ENROLLLOOP;
+    }
+
+    break; //break while loop
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Initializing Device...");
@@ -304,6 +631,15 @@ void setup() {
   if (!SD.begin(SD_CS)) {
     Serial.println("SD Card: Initialization failed!");
     return;
+  }
+
+  // Fingerprint
+  finger.begin(57600);
+  
+  if (finger.verifyPassword()) {
+    Serial.println("Found fingerprint sensor!");
+  } else {
+    Serial.println("Did not find fingerprint sensor :(");    
   }
 }
 
