@@ -18,12 +18,25 @@ String readPrefix() {
   }
 }
 
-void readData(Vector<Person*> *persons) {
+int readShift() {
+  File shiftFile;
+  shiftFile = SD.open("shift");
+  if (shiftFile) {
+    while (shiftFile.available()) {
+      return shiftFile.readStringUntil('\n').toInt();
+    }
+  } else {
+    Serial.println("Unable to open shift file..!");
+    return 1;
+  }
+}
+
+void readStudents(Vector<Student*> *students) {
   File dataFile;
   String buffer;
 
-  Serial.println("Reading Persons Data...");
-  dataFile = SD.open("persons");
+  Serial.println("Reading Students Data...");
+  dataFile = SD.open("students");
   if (dataFile) {
     while (dataFile.available()) {
       buffer = dataFile.readStringUntil('\n');
@@ -31,7 +44,6 @@ void readData(Vector<Person*> *persons) {
       int id = -1;
       String regno = "";
       String name = "";
-      int type = 0;
       int fingerprint = -1;
       
       int index = 0;
@@ -51,24 +63,70 @@ void readData(Vector<Person*> *persons) {
             name = str;
             break;
           case 3:
-            type = atoi(str);
-            break;
-          case 4:
             fingerprint = atoi(str);
             break;
         }
         index += 1;
       }
       if (id > 0) {
-        Person* person = new Person(id, regno, name, type, fingerprint);
-        persons->PushBack(person);
+        Student* student = new Student(id, regno, name, fingerprint);
+        students->PushBack(student);
       }
     }
     dataFile.close();
     Serial.print("Successfully parsed ");
-    Serial.print(persons->Size());
-    Serial.println(" persons...");
+    Serial.print(students->Size());
+    Serial.println(" students...");
   } else {
-    Serial.println("Unable to open persons file..!");
+    Serial.println("Unable to open students file..!");
+  }
+}
+
+
+void readStaffs(Vector<Staff*> *staffs) {
+  File dataFile;
+  String buffer;
+
+  Serial.println("Reading Staffs Data...");
+  dataFile = SD.open("staffs");
+  if (dataFile) {
+    while (dataFile.available()) {
+      buffer = dataFile.readStringUntil('\n');
+
+      int id = -1;
+      String regno = "";
+      String name = "";
+      int fingerprint = -1;
+      
+      int index = 0;
+      char buf[buffer.length()];
+      buffer.toCharArray(buf, sizeof(buf));
+      char *p = buf;
+      char *str;
+      while ((str = strtok_r(p, ";", &p)) != NULL) {
+        switch(index) {
+          case 0:
+            id = atoi(str);
+            break;
+          case 1:
+            name = str;
+            break;
+          case 2:
+            fingerprint = atoi(str);
+            break;
+        }
+        index += 1;
+      }
+      if (id > 0) {
+        Staff* staff = new Staff(id, name, fingerprint);
+        staffs->PushBack(staff);
+      }
+    }
+    dataFile.close();
+    Serial.print("Successfully parsed ");
+    Serial.print(staffs->Size());
+    Serial.println(" staffs...");
+  } else {
+    Serial.println("Unable to open staffs file..!");
   }
 }
