@@ -593,10 +593,12 @@ ENROLLLOOP:
         case TStudent: {
           Student *student = students[index_enroll];          
           student->fingerprint = fingerprintID;
+          writeStudents(students);
           break;
         } case TStaff: {
           Staff *staff = staffs[index_enroll];
           staff->fingerprint = fingerprintID;
+          writeStaffs(staffs);
           break;
         }
       }

@@ -49,4 +49,6 @@ class Staff {
 String readPrefix();
 int readShift();
 void readStudents(Vector<Student*> *students);
+void writeStudents(Vector<Student*> students);
 void readStaffs(Vector<Staff*> *staffs);
+void writeStaffs(Vector<Staff*> staffs);
