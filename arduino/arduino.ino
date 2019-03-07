@@ -35,12 +35,15 @@ MCUFRIEND_kbv tft;
 #include "objects.h"
 #include "Vector.h"
 
-Vector<Person*> persons;
+Vector<Staff*> staffs;
+Vector<Student*> students;
 String prefix;
-boolean loaded=false;
+int shift;
+boolean loaded = false;
 
-boolean display_enroll=false;
-int index_enroll=0;
+boolean display_enroll = false;
+enum types type_enroll = TStudent;
+int index_enroll = 0;
 
 int pixel_x, pixel_y;     //Touch_getXY() updates global vars
 bool Touch_getXY(void)
@@ -71,9 +74,8 @@ void displayHome() {
 
   if (!loaded) {
     prefix = readPrefix();
-    Serial.print("Prefix:");
-    Serial.println(prefix);
-    readData(&persons);
+    readStaffs(&staffs);
+    readStudents(&students);
     loaded=true;
   }
   
@@ -104,35 +106,118 @@ void displayHome() {
 void writePersonInfo() {
   tft.fillRect(10, 50, 220, 220, WHITE);
 
-  Person* person = persons[index_enroll];
+  switch(type_enroll) {
+    case TStudent: {
+      Student *student = students[index_enroll];
+      
+      tft.setCursor(15, 55);
+      tft.setTextColor(GREY);
+      tft.print("Regno:");
+      tft.setCursor(15, 75);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      tft.print(prefix);
+      tft.print(shift - 1);
+      tft.print(student->regno);
+      
+      tft.setCursor(15, 105);
+      tft.setTextColor(GREY);
+      tft.print("Name:");
+      tft.setCursor(15, 125);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      tft.print(student->name);
 
-  tft.setCursor(15, 55);
-  tft.setTextColor(GREY);
-  tft.print("Regno:");
-  tft.setCursor(15, 75);
-  tft.setTextColor(BLACK);
-  tft.print("  ");
-  tft.print(prefix);
-  tft.print(person->regno);
+      tft.setCursor(15, 155);
+      tft.setTextColor(GREY);
+      tft.print("Enrolled:");
+      tft.setCursor(15, 175);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      if (student->fingerprint > 0)
+        tft.print("YES");
+      else
+        tft.print("NO");
+      break;
+    } case TStaff: {
+      Staff *staff = staffs[index_enroll];
+      
+      tft.setCursor(15, 55);
+      tft.setTextColor(GREY);
+      tft.print("ID:");
+      tft.setCursor(15, 75);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      tft.print(staff->id);
+      
+      tft.setCursor(15, 105);
+      tft.setTextColor(GREY);
+      tft.print("Name:");
+      tft.setCursor(15, 125);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      tft.print(staff->name);
 
-  tft.setCursor(15, 105);
-  tft.setTextColor(GREY);
-  tft.print("Name:");
-  tft.setCursor(15, 125);
-  tft.setTextColor(BLACK);
-  tft.print("  ");
-  tft.print(person->name);
+      tft.setCursor(15, 155);
+      tft.setTextColor(GREY);
+      tft.print("Enrolled:");
+      tft.setCursor(15, 175);
+      tft.setTextColor(BLACK);
+      tft.print("  ");
+      if (staff->fingerprint > 0)
+        tft.print("YES");
+      else
+        tft.print("NO");
+      break;
+    }
+  }
+}
 
-  tft.setCursor(15, 155);
-  tft.setTextColor(GREY);
-  tft.print("Enrolled:");
-  tft.setCursor(15, 175);
-  tft.setTextColor(BLACK);
-  tft.print("  ");
-  if (person->fingerprint > 0)
-    tft.print("YES");
-  else
-    tft.print("NO");
+void displaySelectType() {
+  Adafruit_GFX_Button btn_back, btn_staff, btn_student;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  btn_staff.initButton(&tft, 120, 140, 150, 40, BLACK, WHITE, BLACK, "STAFF", 2);
+  btn_student.initButton(&tft, 120, 180, 150, 40, BLACK, WHITE, BLACK, "STUDENT", 2);
+
+DISPSELECT:
+  tft.fillScreen(WHITE);
+
+  btn_back.drawButton(false);
+  btn_staff.drawButton(false);
+  btn_student.drawButton(false);
+
+  while (true) {
+    bool down = Touch_getXY();
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    btn_staff.press(down && btn_staff.contains(pixel_x, pixel_y));
+    btn_student.press(down && btn_student.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
+    if (btn_staff.justReleased())
+        btn_staff.drawButton();
+    if (btn_student.justReleased())
+        btn_student.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);     
+        break;
+    }
+    if (btn_staff.justPressed()) {
+        btn_staff.drawButton(true);
+        type_enroll = TStaff;
+        displayEnroll();
+        goto DISPSELECT;
+    }
+    if (btn_student.justPressed()) {
+        btn_student.drawButton(true);
+        type_enroll = TStudent;
+        displayEnroll();
+        goto DISPSELECT;
+    }
+  }
 }
 
 void displayEnroll() {
@@ -183,10 +268,21 @@ void displayEnroll() {
         btn_enroll.drawButton(true);
         break;
     }
-    if (btn_next.justPressed() && index_enroll < persons.Size() - 1) {
-        index_enroll += 1;
-        btn_next.drawButton(true);
-        writePersonInfo();
+    if (btn_next.justPressed()) {
+        int index_max = -1;
+        switch (type_enroll) {
+          case TStudent:
+            index_max = students.Size() - 1;
+            break;
+          case TStaff:
+            index_max = staffs.Size() - 1;
+            break;
+        }
+        if (index_enroll < index_max) {
+          index_enroll += 1;
+          btn_next.drawButton(true);
+          writePersonInfo();
+        }
     }
   }
 }
@@ -216,6 +312,6 @@ void loop() {
 
   if (display_enroll) {
     display_enroll = false;
-    displayEnroll();
+    displaySelectType();
   }
 }
