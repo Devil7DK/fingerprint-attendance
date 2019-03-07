@@ -147,6 +147,7 @@ void displayHome() {
 
   if (!loaded) {
     prefix = readPrefix();
+    shift = readShift();
     readStaffs(&staffs);
     readStudents(&students);
     loaded=true;
@@ -586,8 +587,19 @@ ENROLLLOOP:
     }   
   
     p = finger.storeModel(fingerprintID);
-    if (p == FINGERPRINT_OK) {
+    if (p == FINGERPRINT_OK) {      
       showEnrollFPIcon(String("     Stored!"), GREEN);
+      switch(type_enroll) {
+        case TStudent: {
+          Student *student = students[index_enroll];          
+          student->fingerprint = fingerprintID;
+          break;
+        } case TStaff: {
+          Staff *staff = staffs[index_enroll];
+          staff->fingerprint = fingerprintID;
+          break;
+        }
+      }
     } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
       showEnrollFPIcon(String("      ERROR"), RED);
       Serial.println("Communication error");
