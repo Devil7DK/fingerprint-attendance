@@ -379,7 +379,7 @@ void writeFPEnrollInfo() {
     } case TStaff: {
       Staff *staff = staffs[index_enroll];
       name = staff->name;
-      fingerprintID = staff->id + 500;
+      fingerprintID = staff->id;
       break;
     }
   }
@@ -628,6 +628,101 @@ ENROLLLOOP:
   }
 }
 
+int getFingerprintID() {
+  uint8_t p = finger.getImage();
+  if (p != FINGERPRINT_OK)  return -1;
+
+  p = finger.image2Tz();
+  if (p != FINGERPRINT_OK)  return -1;
+
+  p = finger.fingerFastSearch();
+  if (p != FINGERPRINT_OK)  return -2;
+  
+  // found a match!
+  Serial.print("Found ID #"); Serial.print(finger.fingerID); 
+  Serial.print(" with confidence of "); Serial.println(finger.confidence);
+  return finger.fingerID; 
+}
+
+void showAuthFPIcon(String msg, uint16_t color) {
+  tft.fillRect(10, 120, 220, 200, WHITE);
+  tft.drawRect(56, 130, 128, 128, BLACK);
+
+  tft.setCursor(15, 280);
+  tft.setTextColor(color); 
+  tft.setTextSize(2);
+  tft.print(msg);
+
+  tft.drawBitmap(86, 165, fp_icon, 60, 60, color);
+  delay(2000);
+}
+
+boolean authendicateStaff() {
+  boolean staffAvailable = false;
+  for (int i = 0; i < staffs.Size(); i++) {
+    if (staffs[i]->fingerprint > 0) {
+      staffAvailable = true;
+      break;
+    }
+  }
+
+  if (!staffAvailable) return true; // No Staff is Enrolled to Authendicate
+
+  Adafruit_GFX_Button btn_back;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  
+  tft.fillScreen(WHITE);
+
+  btn_back.drawButton(false);
+
+  boolean writeicon = true;
+
+  tft.setCursor(10, 75);
+  tft.setTextColor(RED);
+  tft.setTextSize(2);
+  tft.print("   AUTHENDICATION\n      REQUIRED");
+
+  while (true) {
+AUTHLOOP:
+    if (writeicon) {
+      showAuthFPIcon(String("   Place finger"), BLUE);
+      writeicon = false;
+    }
+    
+    bool down = Touch_getXY();
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);        
+        return false;
+    }
+
+    fingerprintID = getFingerprintID();
+    delay(50);
+    if (fingerprintID > 0 && fingerprintID < 101) {
+      for (int i = 0; i < staffs.Size(); i++) {
+        if (staffs[i]->fingerprint == fingerprintID) {
+          showAuthFPIcon(String("  Authendicated!"), GREEN);
+          return true;
+        }
+      }
+    } else if (fingerprintID > 100) {
+      showAuthFPIcon(String("   Not Allowed!"), RED);
+      writeicon = true;
+      goto AUTHLOOP;
+    }else if (fingerprintID == -2) {
+      showAuthFPIcon(String("  Authendication\n       Failed"), RED);
+      writeicon = true;
+      goto AUTHLOOP;
+    }
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Initializing Device...");
@@ -662,6 +757,8 @@ void loop() {
 
   if (display_enroll) {
     display_enroll = false;
-    displaySelectType();
+    if (authendicateStaff()) {
+      displaySelectType();
+    }
   }
 }
