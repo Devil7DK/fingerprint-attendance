@@ -37,6 +37,12 @@ SoftwareSerial fpSerial(A14, A15);
 
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&fpSerial);
 
+// RTC
+#include <Wire.h>
+#include "RTClib.h"
+
+RTC_DS1307 RTC;
+
 // Custom Headers
 #include "bmp.h"
 #include "objects.h"
@@ -809,8 +815,14 @@ int selectPeriod() {
   }
 }
 
+char* getDate() {
+  char* date = "01-01-2019";
+  sprintf(date, "%02d-%02d-%04d", RTC.now().day(), RTC.now().month(), RTC.now().year());
+  return date;
+}
+
 void displayMark(int hour) {
-  String date = "01-01-2019";
+  char* date = getDate();
   Adafruit_GFX_Button btn_back;
 
   btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
@@ -901,6 +913,13 @@ void setup() {
     Serial.println("Found fingerprint sensor!");
   } else {
     Serial.println("Did not find fingerprint sensor :(");    
+  }
+
+  Wire.begin();
+  RTC.begin();
+  if (! RTC.isrunning()) {
+    Serial.println("RTC is NOT running!");
+    RTC.adjust(DateTime(__DATE__, __TIME__));
   }
 }
 
