@@ -809,7 +809,17 @@ int selectPeriod() {
         return 5;
     }
     if (btn_hA.justPressed()) {
-        btn_h5.drawButton(true);        
+        btn_hA.drawButton(true);
+        int hour = RTC.now().hour();
+        int minute = RTC.now().minute();
+        
+        int startHour = 8 + (shift == 1 ? 0 : 5);
+        for (int i = 1; i <= 5; i++) {
+          if ((hour == startHour + (i - 1) && minute >= 45) || (hour == startHour + i && minute < 45)) {
+            return i;
+          }
+        }
+        
         return 5;
     }
   }
