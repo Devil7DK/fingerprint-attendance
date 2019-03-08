@@ -116,6 +116,8 @@ boolean display_enroll = false;
 enum types type_enroll = TStudent;
 int index_enroll = 0;
 
+boolean display_mark = false;
+
 int fingerprintID = 0;
 
 int pixel_x, pixel_y;     //Touch_getXY() updates global vars
@@ -172,6 +174,7 @@ void displayHome() {
     }
     if (btn_mark.justPressed()) {
         btn_mark.drawButton(true);
+        display_mark = true;
         break;
     }
   }
@@ -723,6 +726,155 @@ AUTHLOOP:
   }
 }
 
+int selectPeriod() {
+  Adafruit_GFX_Button btn_back, btn_h1, btn_h2, btn_h3, btn_h4, btn_h5, btn_hA;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  btn_h1.initButton(&tft, 45, 150, 50, 40, BLACK, WHITE, BLACK, "1", 2);
+  btn_h2.initButton(&tft, 95, 150, 50, 40, BLACK, WHITE, BLACK, "2", 2);
+  btn_h3.initButton(&tft, 145, 150, 50, 40, BLACK, WHITE, BLACK, "3", 2);
+  btn_h4.initButton(&tft, 195, 150, 50, 40, BLACK, WHITE, BLACK, "4", 2);
+  btn_h5.initButton(&tft, 45, 190, 50, 40, BLACK, WHITE, BLACK, "5", 2);
+  btn_hA.initButton(&tft, 145, 190, 150, 40, BLACK, WHITE, BLACK, "AUTO", 2);
+
+  tft.fillScreen(WHITE);
+
+  tft.setCursor(10, 75);
+  tft.setTextColor(RED);
+  tft.setTextSize(2);
+  tft.print("   SELECT HOUR");
+
+  btn_back.drawButton(false);
+  btn_h1.drawButton(false);
+  btn_h2.drawButton(false);
+  btn_h3.drawButton(false);
+  btn_h4.drawButton(false);
+  btn_h5.drawButton(false);
+  btn_hA.drawButton(false);
+
+  while (true) {
+    bool down = Touch_getXY();
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    btn_h1.press(down && btn_h1.contains(pixel_x, pixel_y));
+    btn_h2.press(down && btn_h2.contains(pixel_x, pixel_y));
+    btn_h3.press(down && btn_h3.contains(pixel_x, pixel_y));
+    btn_h4.press(down && btn_h4.contains(pixel_x, pixel_y));
+    btn_h5.press(down && btn_h5.contains(pixel_x, pixel_y));
+    btn_hA.press(down && btn_hA.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
+    if (btn_h1.justReleased())
+        btn_h1.drawButton();
+    if (btn_h2.justReleased())
+        btn_h2.drawButton();
+    if (btn_h3.justReleased())
+        btn_h3.drawButton();
+    if (btn_h4.justReleased())
+        btn_h4.drawButton();
+    if (btn_h5.justReleased())
+        btn_h5.drawButton();
+    if (btn_hA.justReleased())
+        btn_hA.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);        
+        return 0;
+    }
+    if (btn_h1.justPressed()) {
+        btn_h1.drawButton(true);        
+        return 1;
+    }
+    if (btn_h2.justPressed()) {
+        btn_h2.drawButton(true);        
+        return 2;
+    }
+    if (btn_h3.justPressed()) {
+        btn_h3.drawButton(true);        
+        return 3;
+    }
+    if (btn_h4.justPressed()) {
+        btn_h4.drawButton(true);        
+        return 4;
+    }
+    if (btn_h5.justPressed()) {
+        btn_h5.drawButton(true);        
+        return 5;
+    }
+    if (btn_hA.justPressed()) {
+        btn_h5.drawButton(true);        
+        return 5;
+    }
+  }
+}
+
+void displayMark(int hour) {
+  String date = "01-01-2019";
+  Adafruit_GFX_Button btn_back;
+
+  btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  
+  tft.fillScreen(WHITE);
+
+  btn_back.drawButton(false);
+
+  boolean writeicon = true;
+
+  tft.setCursor(10, 65);
+  tft.setTextColor(RED);
+  tft.setTextSize(2);
+  tft.print("  MARK ATTENDANCE");
+
+  tft.setCursor(73, 95);
+  tft.setTextColor(GREY);
+  tft.setTextSize(1);
+  tft.print("Date: ");
+  tft.print(date);
+  tft.setCursor(73, 105);
+  tft.print("Hour: ");
+  tft.print(hour);
+
+  while (true) {
+AUTHLOOP:
+    if (writeicon) {
+      showAuthFPIcon(String("   Place finger"), BLUE);
+      writeicon = false;
+    }
+    
+    bool down = Touch_getXY();
+
+    btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    
+    if (btn_back.justReleased())
+        btn_back.drawButton();
+    
+    if (btn_back.justPressed()) {
+        btn_back.drawButton(true);        
+        return false;
+    }
+
+    fingerprintID = getFingerprintID();
+    delay(50);
+    if (fingerprintID > 0 && fingerprintID < 101) {
+      for (int i = 0; i < staffs.Size(); i++) {
+        if (staffs[i]->fingerprint == fingerprintID) {
+          showAuthFPIcon(String("  Authendicated!"), GREEN);
+          return true;
+        }
+      }
+    } else if (fingerprintID > 100) {
+      showAuthFPIcon(String("   Not Allowed!"), RED);
+      writeicon = true;
+      goto AUTHLOOP;
+    }else if (fingerprintID == -2) {
+      showAuthFPIcon(String("  Authendication\n       Failed"), RED);
+      writeicon = true;
+      goto AUTHLOOP;
+    }
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Initializing Device...");
@@ -759,6 +911,16 @@ void loop() {
     display_enroll = false;
     if (authendicateStaff()) {
       displaySelectType();
+    }
+  }
+
+  if (display_mark) {
+    display_mark = false;
+    if (authendicateStaff()) {
+      int period = selectPeriod();
+      if (period > 0) {
+        displayMark(period);
+      }
     }
   }
 }
