@@ -71,11 +71,10 @@ class Attendance {
     hour = 1;
   }
 
-  Attendance(int staffID_, char* date_, int hour_, Vector<AttendanceItem*> items_) {
+  Attendance(int staffID_, char* date_, int hour_) {
     staffID = staffID_;
     date = date_;
     hour = hour_;
-    items = items_;
   }
 };
 
@@ -85,3 +84,6 @@ void readStudents(Vector<Student*> *students);
 void writeStudents(Vector<Student*> students);
 void readStaffs(Vector<Staff*> *staffs);
 void writeStaffs(Vector<Staff*> staffs);
+
+void readAttendance(Attendance *attendance, Vector<Student*> students);
+void writeAttendance(Attendance *attendance);
