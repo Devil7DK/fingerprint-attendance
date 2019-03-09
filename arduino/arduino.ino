@@ -410,7 +410,7 @@ void writeFPEnrollInfo() {
   tft.print(name);
 }
 
-void showEnrollFPIcon(String msg, uint16_t color) {
+void showEnrollFPIcon(String msg, uint16_t color, int waitsec) {
   tft.fillRect(10, 155, 220, 155, WHITE);
   tft.drawRect(56, 155, 128, 120, BLACK);
   tft.setCursor(70, 165);
@@ -424,7 +424,7 @@ void showEnrollFPIcon(String msg, uint16_t color) {
   tft.print(msg);
 
   tft.drawBitmap(86, 185, fp_icon, 60, 60, color);
-  delay(2000);
+  delay(waitsec * 1000);
 }
 
 void displayEnrollFP() {
@@ -443,7 +443,7 @@ void displayEnrollFP() {
   while (true) {
 ENROLLLOOP:
     if (writeicon) {
-      showEnrollFPIcon(String("   Place finger"), BLUE);
+      showEnrollFPIcon(String("   Place finger"), BLUE, 0);
       writeicon = false;
     }
     bool down = Touch_getXY();
@@ -486,40 +486,40 @@ ENROLLLOOP:
         Serial.println("Image converted");
         break;
       case FINGERPRINT_IMAGEMESS:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Image too messy");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_PACKETRECIEVEERR:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Communication error");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_FEATUREFAIL:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Could not find fingerprint features");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_INVALIDIMAGE:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Could not find fingerprint features");
         writeicon = true;
         goto ENROLLLOOP;
       default:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Unknown error");
         writeicon = true;
         goto ENROLLLOOP;
     }
 
-    showEnrollFPIcon(String("  Remove finger"), GREEN);
+    showEnrollFPIcon(String("  Remove finger"), GREEN, 0);
     p = 0;
     while (p != FINGERPRINT_NOFINGER) {
       p = finger.getImage();
     }
     
     p = -1;
-    showEnrollFPIcon(String("Place finger again"), BLUE);
+    showEnrollFPIcon(String("Place finger again"), BLUE, 0);
     while (p != FINGERPRINT_OK) {
       p = finger.getImage();
       switch (p) {
@@ -546,27 +546,27 @@ ENROLLLOOP:
         Serial.println("Image converted");
         break;
       case FINGERPRINT_IMAGEMESS:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Image too messy");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_PACKETRECIEVEERR:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Communication error");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_FEATUREFAIL:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Could not find fingerprint features");
         writeicon = true;
         goto ENROLLLOOP;
       case FINGERPRINT_INVALIDIMAGE:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Could not find fingerprint features");
         writeicon = true;
         goto ENROLLLOOP;
       default:
-        showEnrollFPIcon(String("      ERROR"), RED);
+        showEnrollFPIcon(String("      ERROR"), RED, 2);
         Serial.println("Unknown error");
         writeicon = true;
         goto ENROLLLOOP;
@@ -577,19 +577,19 @@ ENROLLLOOP:
   
     p = finger.createModel();
     if (p == FINGERPRINT_OK) {
-      showEnrollFPIcon(String("  Prints matched!"), GREEN);
+      showEnrollFPIcon(String("  Prints matched!"), GREEN, 2);
     } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Communication error");
       writeicon = true;
       goto ENROLLLOOP;
     } else if (p == FINGERPRINT_ENROLLMISMATCH) {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Fingerprints did not match");
       writeicon = true;
       goto ENROLLLOOP;
     } else {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Unknown error");
       writeicon = true;
       goto ENROLLLOOP;
@@ -597,7 +597,7 @@ ENROLLLOOP:
   
     p = finger.storeModel(fingerprintID);
     if (p == FINGERPRINT_OK) {      
-      showEnrollFPIcon(String("     Stored!"), GREEN);
+      showEnrollFPIcon(String("     Stored!"), GREEN, 2);
       switch(type_enroll) {
         case TStudent: {
           Student *student = students[index_enroll];          
@@ -612,22 +612,22 @@ ENROLLLOOP:
         }
       }
     } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Communication error");
       writeicon = true;
       goto ENROLLLOOP;
     } else if (p == FINGERPRINT_BADLOCATION) {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Could not store in that location");
       writeicon = true;
       goto ENROLLLOOP;
     } else if (p == FINGERPRINT_FLASHERR) {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Error writing to flash");
       writeicon = true;
       goto ENROLLLOOP;
     } else {
-      showEnrollFPIcon(String("      ERROR"), RED);
+      showEnrollFPIcon(String("      ERROR"), RED, 2);
       Serial.println("Unknown error");
       writeicon = true;
       goto ENROLLLOOP;
@@ -653,7 +653,7 @@ int getFingerprintID() {
   return finger.fingerID; 
 }
 
-void showAuthFPIcon(String msg, uint16_t color) {
+void showAuthFPIcon(String msg, uint16_t color, int waitsec) {
   tft.fillRect(10, 120, 220, 200, WHITE);
   tft.drawRect(56, 130, 128, 128, BLACK);
 
@@ -663,7 +663,7 @@ void showAuthFPIcon(String msg, uint16_t color) {
   tft.print(msg);
 
   tft.drawBitmap(86, 165, fp_icon, 60, 60, color);
-  delay(2000);
+  delay(waitsec * 1000);
 }
 
 boolean authendicateStaff() {
@@ -695,7 +695,7 @@ boolean authendicateStaff() {
   while (true) {
 AUTHLOOP:
     if (writeicon) {
-      showAuthFPIcon(String("   Place finger"), BLUE);
+      showAuthFPIcon(String("   Place finger"), BLUE, 0);
       writeicon = false;
     }
     
@@ -716,16 +716,16 @@ AUTHLOOP:
     if (fingerprintID > 0 && fingerprintID < 101) {
       for (int i = 0; i < staffs.Size(); i++) {
         if (staffs[i]->fingerprint == fingerprintID) {
-          showAuthFPIcon(String("  Authendicated!"), GREEN);
+          showAuthFPIcon(String("  Authendicated!"), GREEN, 2);
           return true;
         }
       }
     } else if (fingerprintID > 100) {
-      showAuthFPIcon(String("   Not Allowed!"), RED);
+      showAuthFPIcon(String("   Not Allowed!"), RED, 2);
       writeicon = true;
       goto AUTHLOOP;
     }else if (fingerprintID == -2) {
-      showAuthFPIcon(String("  Authendication\n       Failed"), RED);
+      showAuthFPIcon(String("  Authendication\n       Failed"), RED, 2);
       writeicon = true;
       goto AUTHLOOP;
     }
@@ -860,7 +860,7 @@ void displayMark(int hour) {
   while (true) {
 AUTHLOOP:
     if (writeicon) {
-      showAuthFPIcon(String("   Place finger"), BLUE);
+      showAuthFPIcon(String("   Place finger"), BLUE, 0);
       writeicon = false;
     }
     
@@ -881,16 +881,16 @@ AUTHLOOP:
     if (fingerprintID > 0 && fingerprintID < 101) {
       for (int i = 0; i < staffs.Size(); i++) {
         if (staffs[i]->fingerprint == fingerprintID) {
-          showAuthFPIcon(String("  Authendicated!"), GREEN);
+          showAuthFPIcon(String("  Authendicated!"), GREEN, 2);
           return true;
         }
       }
     } else if (fingerprintID > 100) {
-      showAuthFPIcon(String("   Not Allowed!"), RED);
+      showAuthFPIcon(String("   Not Allowed!"), RED, 2);
       writeicon = true;
       goto AUTHLOOP;
     }else if (fingerprintID == -2) {
-      showAuthFPIcon(String("  Authendication\n       Failed"), RED);
+      showAuthFPIcon(String("  Authendication\n       Failed"), RED, 2);
       writeicon = true;
       goto AUTHLOOP;
     }
