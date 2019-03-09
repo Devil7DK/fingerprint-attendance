@@ -4,6 +4,7 @@
 #include "Vector.h"
 
 enum types {TStaff, TStudent};
+enum attstatus {Present, Absent};
 
 class Student {
   public:
@@ -43,6 +44,38 @@ class Staff {
     id = id_;
     name = name_;
     fingerprint = fingerprint_;
+  }
+};
+
+class AttendanceItem {
+  public:
+    int id;
+    enum attstatus status;
+
+  AttendanceItem(int id_, enum attstatus status_) {
+    id = id_;
+    status = status_;
+  }
+};
+
+class Attendance {
+  public:
+    int staffID;
+    char* date;
+    int hour;
+    Vector<AttendanceItem*> items;
+
+  Attendance() {
+    staffID = -1;
+    date = "01-09-2019";
+    hour = 1;
+  }
+
+  Attendance(int staffID_, char* date_, int hour_, Vector<AttendanceItem*> items_) {
+    staffID = staffID_;
+    date = date_;
+    hour = hour_;
+    items = items_;
   }
 };
 
