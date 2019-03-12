@@ -21,7 +21,9 @@ Partial Class frm_Main
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm_Main))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
         Me.rp_Home = New DevExpress.XtraBars.Ribbon.RibbonPage()
+        Me.rpg_Database = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.tc_Main = New DevExpress.XtraTab.XtraTabControl()
         Me.tp_Students = New DevExpress.XtraTab.XtraTabPage()
@@ -51,9 +53,9 @@ Partial Class frm_Main
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 1
+        Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rp_Home})
         Me.RibbonControl.ShowCategoryInCaption = False
@@ -66,10 +68,25 @@ Partial Class frm_Main
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         Me.RibbonControl.Toolbar.ShowCustomizeItem = False
         '
+        'btn_Refresh
+        '
+        Me.btn_Refresh.Caption = "Refresh"
+        Me.btn_Refresh.Id = 1
+        Me.btn_Refresh.ImageOptions.SvgImage = CType(resources.GetObject("btn_Refresh.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Refresh.Name = "btn_Refresh"
+        '
         'rp_Home
         '
+        Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database})
         Me.rp_Home.Name = "rp_Home"
         Me.rp_Home.Text = "Home"
+        '
+        'rpg_Database
+        '
+        Me.rpg_Database.ItemLinks.Add(Me.btn_Refresh)
+        Me.rpg_Database.Name = "rpg_Database"
+        Me.rpg_Database.ShowCaptionButton = False
+        Me.rpg_Database.Text = "Database"
         '
         'RibbonStatusBar
         '
@@ -179,7 +196,6 @@ Partial Class frm_Main
         Me.Controls.Add(Me.tc_Main)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frm_Main"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar
@@ -216,4 +232,6 @@ Partial Class frm_Main
     Friend WithEvents gc_Staffs As DevExpress.XtraGrid.GridControl
     Friend WithEvents gv_Staffs As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents dlg_SelectImage As OpenFileDialog
+    Friend WithEvents rpg_Database As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents btn_Refresh As DevExpress.XtraBars.BarButtonItem
 End Class

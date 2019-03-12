@@ -40,6 +40,27 @@ Public Class frm_Main
     End Property
 #End Region
 
+#Region "Subs"
+    Private Async Function LoadData() As Task
+        ShowProgressPanel()
+
+        Dim Courses As New BindingList(Of Objects.Course)
+        Dim Staffs As New BindingList(Of Objects.Staff)
+        Dim Students As New BindingList(Of Objects.Student)
+        Await Task.Run(Sub()
+                           Courses = Database.Courses.Load(False)
+                           Staffs = Database.Staffs.Load(False)
+                           Students = Database.Students.Load(Courses.ToList, True)
+                       End Sub)
+        Me.Courses = Courses
+        Me.Staffs = Staffs
+        Me.Students = Students
+
+        HideProgressPanel()
+    End Function
+
+#End Region
+
 #Region "Progress Panel"
     Sub ShowProgressPanel()
         OverlayHandle = SplashScreenManager.ShowOverlayForm(Me)
@@ -90,21 +111,13 @@ Public Class frm_Main
 
 #Region "Form Events"
     Private Async Sub frm_Main_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        ShowProgressPanel()
+        Await LoadData()
+    End Sub
+#End Region
 
-        Dim Courses As New BindingList(Of Objects.Course)
-        Dim Staffs As New BindingList(Of Objects.Staff)
-        Dim Students As New BindingList(Of Objects.Student)
-        Await Task.Run(Sub()
-                           Courses = Database.Courses.Load(False)
-                           Staffs = Database.Staffs.Load(False)
-                           Students = Database.Students.Load(Courses.ToList, True)
-                       End Sub)
-        Me.Courses = Courses
-        Me.Staffs = Staffs
-        Me.Students = Students
-
-        HideProgressPanel()
+#Region "Button Events"
+    Private Async Sub btn_Refresh_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btn_Refresh.ItemClick
+        Await LoadData()
     End Sub
 #End Region
 
