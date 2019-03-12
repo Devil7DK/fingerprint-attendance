@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\Common.vb" />
+    <Compile Include="Database\Courses.vb" />
     <Compile Include="Enums\Shifts.vb" />
     <Compile Include="frm_Main.Designer.vb">
       <DependentUpon>frm_Main.vb</DependentUpon>
