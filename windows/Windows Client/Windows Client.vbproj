@@ -111,6 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Objects\Course.vb" />
+    <Compile Include="Objects\Staff.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frm_Main.resx">
