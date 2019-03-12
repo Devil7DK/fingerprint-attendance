@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="Objects\Course.vb" />
     <Compile Include="Objects\Staff.vb" />
+    <Compile Include="Objects\Student.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frm_Main.resx">
