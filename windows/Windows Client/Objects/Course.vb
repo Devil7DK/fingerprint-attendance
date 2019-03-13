@@ -24,5 +24,11 @@
         End Sub
 #End Region
 
+#Region "Subs"
+        Public Overrides Function ToString() As String
+            Return ShortName
+        End Function
+#End Region
+
     End Class
 End Namespace
