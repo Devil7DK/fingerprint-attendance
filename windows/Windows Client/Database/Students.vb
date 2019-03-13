@@ -30,7 +30,7 @@ Namespace Database
                         Dim FingerPrintID As Integer = Reader.Item("fingerprintid")
 
                         Dim Photo As Bitmap = Nothing
-                        Dim PhotoData As Byte() = Reader.Item("photo")
+                        Dim PhotoData As Byte() = If(IsDBNull(Reader.Item("photo")), Nothing, Reader.Item("photo"))
                         If PhotoData IsNot Nothing Then
                             Using MS As New IO.MemoryStream(PhotoData)
                                 Photo = Image.FromStream(MS)
@@ -57,7 +57,7 @@ Namespace Database
                 Command.Parameters.AddWithValue("@rollno", Student.RollNo)
                 Command.Parameters.AddWithValue("@name", Student.Name)
                 Command.Parameters.AddWithValue("@fathername", Student.FatherName)
-                Command.Parameters.AddWithValue("@course", Student.Course)
+                Command.Parameters.AddWithValue("@course", Student.Course.ID)
                 Command.Parameters.AddWithValue("@shift", Student.Shift)
                 Command.Parameters.AddWithValue("@admittedyear", Student.AdmittedYear)
                 Command.Parameters.AddWithValue("@fingerprintid", Student.FingerPrintID)
