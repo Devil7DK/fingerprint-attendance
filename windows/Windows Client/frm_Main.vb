@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports DevExpress.XtraGrid.Views.Base
+Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
 
 Public Class frm_Main
@@ -105,6 +106,14 @@ Public Class frm_Main
                 Students.Remove(Item)
                 gc_Students.RefreshDataSource()
             End If
+        End If
+    End Sub
+
+    Private Sub gv_Students_CustomRowCellEdit(sender As Object, e As CustomRowCellEditEventArgs) Handles gv_Students.CustomRowCellEdit
+        If e.Column.FieldName = "Course" Then
+            Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+            cmb.Items.AddRange(Courses.ToArray)
+            e.RepositoryItem = cmb
         End If
     End Sub
 #End Region
