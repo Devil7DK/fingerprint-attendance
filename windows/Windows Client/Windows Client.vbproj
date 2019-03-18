@@ -131,6 +131,9 @@
     <Compile Include="Objects\Course.vb" />
     <Compile Include="Objects\Staff.vb" />
     <Compile Include="Objects\Student.vb" />
+    <Compile Include="Utils\XtraFormTemp.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frm_Main.resx">
