@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports DevExpress.Data
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
@@ -45,9 +46,9 @@ Public Class frm_Main
     Private Async Function LoadData() As Task
         ShowProgressPanel()
 
-        Dim Courses As New BindingList(Of Objects.Course)
-        Dim Staffs As New BindingList(Of Objects.Staff)
-        Dim Students As New BindingList(Of Objects.Student)
+        Dim Courses As New BindingList(Of Objects.Course) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
+        Dim Staffs As New BindingList(Of Objects.Staff) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
+        Dim Students As New BindingList(Of Objects.Student) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
         Await Task.Run(Sub()
                            Courses = Database.Courses.Load(False)
                            Staffs = Database.Staffs.Load(False)
@@ -132,6 +133,48 @@ Public Class frm_Main
             Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
             cmb.Items.AddRange(Courses.ToArray)
             e.RepositoryItem = cmb
+        End If
+    End Sub
+
+    Private Sub gv_Courses_RowDeleting(sender As Object, e As RowDeletingEventArgs) Handles gv_Courses.RowDeleting
+        If Not Database.Courses.Remove(CType(e.Row, Objects.Course)) Then
+            e.Cancel = True
+            DevExpress.XtraEditors.XtraMessageBox.Show("Unable to remove selected item!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub gv_Staffs_RowDeleting(sender As Object, e As RowDeletingEventArgs) Handles gv_Staffs.RowDeleting
+        If Not Database.Staffs.Remove(CType(e.Row, Objects.Staff)) Then
+            e.Cancel = True
+            DevExpress.XtraEditors.XtraMessageBox.Show("Unable to remove selected item!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub gv_Students_RowDeleting(sender As Object, e As RowDeletingEventArgs) Handles gv_Students.RowDeleting
+        If Not Database.Students.Remove(CType(e.Row, Objects.Student)) Then
+            e.Cancel = True
+            DevExpress.XtraEditors.XtraMessageBox.Show("Unable to remove selected item!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub gc_Courses_ProcessGridKey(sender As Object, e As KeyEventArgs) Handles gc_Courses.ProcessGridKey
+        If e.KeyData = Keys.Delete Then
+            gv_Courses.DeleteSelectedRows()
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub gc_Staffs_ProcessGridKey(sender As Object, e As KeyEventArgs) Handles gc_Staffs.ProcessGridKey
+        If e.KeyData = Keys.Delete Then
+            gv_Staffs.DeleteSelectedRows()
+            e.Handled = True
+        End If
+    End Sub
+
+    Private Sub gc_Students_ProcessGridKey(sender As Object, e As KeyEventArgs) Handles gc_Students.ProcessGridKey
+        If e.KeyData = Keys.Delete Then
+            gv_Students.DeleteSelectedRows()
+            e.Handled = True
         End If
     End Sub
 #End Region
