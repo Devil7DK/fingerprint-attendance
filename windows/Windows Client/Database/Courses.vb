@@ -54,6 +54,22 @@ Namespace Database
                 End If
             End Using
         End Function
+
+        Public Shared Function Update(ByVal Course As Objects.Course) As Boolean
+            Dim Connection As SQLiteConnection = GetConnection()
+            Dim CommandString As String = String.Format("UPDATE {0} SET shortname=@shortname,fullname=@fullname,prefix=@prefix WHERE id=@id;", TableName)
+
+            If Connection.State = ConnectionState.Closed Then Connection.Open()
+
+            Using Command As New SQLiteCommand(CommandString, Connection)
+                Command.Parameters.AddWithValue("@id", Course.ID)
+                Command.Parameters.AddWithValue("@shortname", Course.ShortName)
+                Command.Parameters.AddWithValue("@fullname", Course.FullName)
+                Command.Parameters.AddWithValue("@prefix", Course.Prefix)
+
+                Return Command.ExecuteNonQuery = 1
+            End Using
+        End Function
 #End Region
 
     End Class

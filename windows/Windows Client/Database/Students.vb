@@ -80,6 +80,35 @@ Namespace Database
                 End If
             End Using
         End Function
+
+        Public Shared Function Update(ByVal Student As Objects.Student) As Boolean
+            Dim Connection As SQLiteConnection = GetConnection()
+            Dim CommandString As String = String.Format("UPDATE {0} SET rollno=@rollno,name=@name,fathername=@fathername,course=@course,shift=@shift,photo=@photo,admittedyear=@admittedyear,fingerprintid=@fingerprintid WHERE id=@id;", TableName)
+
+            If Connection.State = ConnectionState.Closed Then Connection.Open()
+
+            Using Command As New SQLiteCommand(CommandString, Connection)
+                Command.Parameters.AddWithValue("@id", Student.ID)
+                Command.Parameters.AddWithValue("@rollno", Student.RollNo)
+                Command.Parameters.AddWithValue("@name", Student.Name)
+                Command.Parameters.AddWithValue("@fathername", Student.FatherName)
+                Command.Parameters.AddWithValue("@course", Student.Course.ID)
+                Command.Parameters.AddWithValue("@shift", Student.Shift)
+                Command.Parameters.AddWithValue("@admittedyear", Student.AdmittedYear)
+                Command.Parameters.AddWithValue("@fingerprintid", Student.FingerPrintID)
+
+                If Student.Photo Is Nothing Then
+                    Command.Parameters.AddWithValue("@photo", Nothing)
+                Else
+                    Using MS As New IO.MemoryStream
+                        Student.Photo.Save(MS, Student.Photo.RawFormat)
+                        Command.Parameters.AddWithValue("@photo", MS.ToArray)
+                    End Using
+                End If
+
+                Return Command.ExecuteNonQuery = 1
+            End Using
+        End Function
 #End Region
 
     End Class

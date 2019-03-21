@@ -70,6 +70,30 @@ Namespace Database
                 End If
             End Using
         End Function
+
+        Public Shared Function Update(ByVal Staff As Objects.Staff) As Boolean
+            Dim Connection As SQLiteConnection = GetConnection()
+            Dim CommandString As String = String.Format("UPDATE {0} SET name=@name,photo=@photo,fingerprintid=@fingerprintid WHERE id=@id;", TableName)
+
+            If Connection.State = ConnectionState.Closed Then Connection.Open()
+
+            Using Command As New SQLiteCommand(CommandString, Connection)
+                Command.Parameters.AddWithValue("@id", Staff.ID)
+                Command.Parameters.AddWithValue("@name", Staff.Name)
+                Command.Parameters.AddWithValue("@fingerprintid", Staff.FingerPrintID)
+
+                If Staff.Photo Is Nothing Then
+                    Command.Parameters.AddWithValue("@photo", Nothing)
+                Else
+                    Using MS As New IO.MemoryStream
+                        Staff.Photo.Save(MS, Staff.Photo.RawFormat)
+                        Command.Parameters.AddWithValue("@photo", MS.ToArray)
+                    End Using
+                End If
+
+                Return Command.ExecuteNonQuery = 1
+            End Using
+        End Function
 #End Region
 
     End Class
