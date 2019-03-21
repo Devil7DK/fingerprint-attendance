@@ -36,6 +36,8 @@ Partial Class frm_Main
         Me.gc_Courses = New DevExpress.XtraGrid.GridControl()
         Me.gv_Courses = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
+        Me.rpg_Device = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tc_Main.SuspendLayout()
@@ -53,9 +55,9 @@ Partial Class frm_Main
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 2
+        Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rp_Home})
         Me.RibbonControl.ShowCategoryInCaption = False
@@ -77,7 +79,7 @@ Partial Class frm_Main
         '
         'rp_Home
         '
-        Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database})
+        Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database, Me.rpg_Device})
         Me.rp_Home.Name = "rp_Home"
         Me.rp_Home.Text = "Home"
         '
@@ -188,6 +190,20 @@ Partial Class frm_Main
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
         '
+        'rpg_Device
+        '
+        Me.rpg_Device.ItemLinks.Add(Me.btn_Comm)
+        Me.rpg_Device.Name = "rpg_Device"
+        Me.rpg_Device.ShowCaptionButton = False
+        Me.rpg_Device.Text = "Device"
+        '
+        'btn_Comm
+        '
+        Me.btn_Comm.Caption = "Import/Export"
+        Me.btn_Comm.Id = 2
+        Me.btn_Comm.ImageOptions.SvgImage = CType(resources.GetObject("btn_Comm.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Comm.Name = "btn_Comm"
+        '
         'frm_Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -234,4 +250,6 @@ Partial Class frm_Main
     Friend WithEvents dlg_SelectImage As OpenFileDialog
     Friend WithEvents rpg_Database As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents btn_Refresh As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents btn_Comm As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents rpg_Device As DevExpress.XtraBars.Ribbon.RibbonPageGroup
 End Class

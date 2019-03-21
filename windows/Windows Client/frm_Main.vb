@@ -5,7 +5,7 @@ Imports DevExpress.XtraSplashScreen
 
 Public Class frm_Main
 
-#Region "Variable"
+#Region "Variables"
     Dim OverlayHandle As IOverlaySplashScreenHandle
 #End Region
 
@@ -74,37 +74,55 @@ Public Class frm_Main
 
 #Region "Grid Events"
     Private Sub gv_Courses_RowUpdated(sender As Object, e As RowObjectEventArgs) Handles gv_Courses.RowUpdated
+        Dim Item As Objects.Course = CType(e.Row, Objects.Course)
         If e.RowHandle = DevExpress.XtraGrid.GridControl.NewItemRowHandle Then
-            Dim Item As Objects.Course = CType(e.Row, Objects.Course)
             If Database.Courses.Add(Item) Then
                 gc_Courses.RefreshDataSource()
             Else
                 Courses.Remove(Item)
                 gc_Courses.RefreshDataSource()
             End If
+        Else
+            If Database.Courses.Update(Item) Then
+                gc_Courses.RefreshDataSource()
+            Else
+                DevExpress.XtraEditors.XtraMessageBox.Show("Unable to save edited values to database!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
         End If
     End Sub
 
     Private Sub gv_Staffs_RowUpdated(sender As Object, e As RowObjectEventArgs) Handles gv_Staffs.RowUpdated
+        Dim Item As Objects.Staff = CType(e.Row, Objects.Staff)
         If e.RowHandle = DevExpress.XtraGrid.GridControl.NewItemRowHandle Then
-            Dim Item As Objects.Staff = CType(e.Row, Objects.Staff)
             If Database.Staffs.Add(Item) Then
                 gc_Staffs.RefreshDataSource()
             Else
                 Staffs.Remove(Item)
                 gc_Staffs.RefreshDataSource()
             End If
+        Else
+            If Database.Staffs.Update(Item) Then
+                gc_Staffs.RefreshDataSource()
+            Else
+                DevExpress.XtraEditors.XtraMessageBox.Show("Unable to save edited values to database!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
         End If
     End Sub
 
     Private Sub gv_Students_RowUpdated(sender As Object, e As RowObjectEventArgs) Handles gv_Students.RowUpdated
+        Dim Item As Objects.Student = CType(e.Row, Objects.Student)
         If e.RowHandle = DevExpress.XtraGrid.GridControl.NewItemRowHandle Then
-            Dim Item As Objects.Student = CType(e.Row, Objects.Student)
             If Database.Students.Add(Item) Then
                 gc_Students.RefreshDataSource()
             Else
                 Students.Remove(Item)
                 gc_Students.RefreshDataSource()
+            End If
+        Else
+            If Database.Students.Update(Item) Then
+                gc_Students.RefreshDataSource()
+            Else
+                DevExpress.XtraEditors.XtraMessageBox.Show("Unable to save edited values to database!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End If
     End Sub
@@ -127,6 +145,15 @@ Public Class frm_Main
 #Region "Button Events"
     Private Async Sub btn_Refresh_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btn_Refresh.ItemClick
         Await LoadData()
+    End Sub
+
+    Private Sub btn_Comm_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles btn_Comm.ItemClick
+        Dim YearShift As New frm_SelectYearShift(Courses.ToList)
+        If YearShift.ShowDialog = DialogResult.OK Then
+            Dim Students As List(Of Objects.Student) = Me.Students.ToList.FindAll(Function(c) c.AdmittedYear = YearShift.Year And c.Shift = YearShift.Shift And c.Course.ID = YearShift.Course.ID)
+            Dim D As New frm_DeviceComm(Students, Staffs.ToList, YearShift.Year, YearShift.Shift, YearShift.Course)
+            D.ShowDialog()
+        End If
     End Sub
 #End Region
 
