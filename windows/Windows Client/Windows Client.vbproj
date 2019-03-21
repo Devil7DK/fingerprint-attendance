@@ -106,6 +106,18 @@
     <Compile Include="Database\Courses.vb" />
     <Compile Include="Database\Staffs.vb" />
     <Compile Include="Database\Students.vb" />
+    <Compile Include="Dialogs\frm_DeviceComm.Designer.vb">
+      <DependentUpon>frm_DeviceComm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frm_DeviceComm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frm_SelectYearShift.Designer.vb">
+      <DependentUpon>frm_SelectYearShift.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frm_SelectYearShift.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Enums\Shifts.vb" />
     <Compile Include="frm_Main.Designer.vb">
       <DependentUpon>frm_Main.vb</DependentUpon>
@@ -136,6 +148,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\frm_DeviceComm.resx">
+      <DependentUpon>frm_DeviceComm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frm_SelectYearShift.resx">
+      <DependentUpon>frm_SelectYearShift.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frm_Main.resx">
       <DependentUpon>frm_Main.vb</DependentUpon>
     </EmbeddedResource>
