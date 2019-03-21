@@ -19,11 +19,14 @@ Partial Class frm_Main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm_Main))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
         Me.rp_Home = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpg_Database = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.rpg_Device = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.tc_Main = New DevExpress.XtraTab.XtraTabControl()
         Me.tp_Students = New DevExpress.XtraTab.XtraTabPage()
@@ -36,8 +39,9 @@ Partial Class frm_Main
         Me.gc_Courses = New DevExpress.XtraGrid.GridControl()
         Me.gv_Courses = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
-        Me.rpg_Device = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
+        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu(Me.components)
+        Me.btn_CompactDatabase = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Exit = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tc_Main.SuspendLayout()
@@ -50,14 +54,16 @@ Partial Class frm_Main
         Me.tp_Courses.SuspendLayout()
         CType(Me.gc_Courses, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv_Courses, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
         '
+        Me.RibbonControl.ApplicationButtonDropDownControl = Me.ApplicationMenu
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm, Me.btn_CompactDatabase, Me.btn_Exit})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 3
+        Me.RibbonControl.MaxItemId = 5
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rp_Home})
         Me.RibbonControl.ShowCategoryInCaption = False
@@ -77,6 +83,13 @@ Partial Class frm_Main
         Me.btn_Refresh.ImageOptions.SvgImage = CType(resources.GetObject("btn_Refresh.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.btn_Refresh.Name = "btn_Refresh"
         '
+        'btn_Comm
+        '
+        Me.btn_Comm.Caption = "Import/Export"
+        Me.btn_Comm.Id = 2
+        Me.btn_Comm.ImageOptions.SvgImage = CType(resources.GetObject("btn_Comm.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Comm.Name = "btn_Comm"
+        '
         'rp_Home
         '
         Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database, Me.rpg_Device})
@@ -89,6 +102,13 @@ Partial Class frm_Main
         Me.rpg_Database.Name = "rpg_Database"
         Me.rpg_Database.ShowCaptionButton = False
         Me.rpg_Database.Text = "Database"
+        '
+        'rpg_Device
+        '
+        Me.rpg_Device.ItemLinks.Add(Me.btn_Comm)
+        Me.rpg_Device.Name = "rpg_Device"
+        Me.rpg_Device.ShowCaptionButton = False
+        Me.rpg_Device.Text = "Device"
         '
         'RibbonStatusBar
         '
@@ -190,19 +210,28 @@ Partial Class frm_Main
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
         '
-        'rpg_Device
+        'ApplicationMenu
         '
-        Me.rpg_Device.ItemLinks.Add(Me.btn_Comm)
-        Me.rpg_Device.Name = "rpg_Device"
-        Me.rpg_Device.ShowCaptionButton = False
-        Me.rpg_Device.Text = "Device"
+        Me.ApplicationMenu.ItemLinks.Add(Me.btn_CompactDatabase)
+        Me.ApplicationMenu.ItemLinks.Add(Me.btn_Exit, True)
+        Me.ApplicationMenu.Name = "ApplicationMenu"
+        Me.ApplicationMenu.Ribbon = Me.RibbonControl
         '
-        'btn_Comm
+        'btn_CompactDatabase
         '
-        Me.btn_Comm.Caption = "Import/Export"
-        Me.btn_Comm.Id = 2
-        Me.btn_Comm.ImageOptions.SvgImage = CType(resources.GetObject("btn_Comm.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.btn_Comm.Name = "btn_Comm"
+        Me.btn_CompactDatabase.Caption = "Compact Database"
+        Me.btn_CompactDatabase.Description = "Shrinks & Rebuilds the Database"
+        Me.btn_CompactDatabase.Id = 3
+        Me.btn_CompactDatabase.ImageOptions.SvgImage = CType(resources.GetObject("btn_CompactDatabase.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_CompactDatabase.Name = "btn_CompactDatabase"
+        '
+        'btn_Exit
+        '
+        Me.btn_Exit.Caption = "Exit"
+        Me.btn_Exit.Description = "Close & Exit the Application"
+        Me.btn_Exit.Id = 4
+        Me.btn_Exit.ImageOptions.SvgImage = CType(resources.GetObject("btn_Exit.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Exit.Name = "btn_Exit"
         '
         'frm_Main
         '
@@ -229,6 +258,7 @@ Partial Class frm_Main
         Me.tp_Courses.ResumeLayout(False)
         CType(Me.gc_Courses, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gv_Courses, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -252,4 +282,7 @@ Partial Class frm_Main
     Friend WithEvents btn_Refresh As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents btn_Comm As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents rpg_Device As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents ApplicationMenu As DevExpress.XtraBars.Ribbon.ApplicationMenu
+    Friend WithEvents btn_CompactDatabase As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents btn_Exit As DevExpress.XtraBars.BarButtonItem
 End Class

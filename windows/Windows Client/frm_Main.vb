@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports DevExpress.Data
+Imports DevExpress.XtraBars
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
@@ -61,6 +62,33 @@ Public Class frm_Main
         HideProgressPanel()
     End Function
 
+    Private Function FormatBytes(ByVal BytesCaller As ULong) As String
+        Dim DoubleBytes As Double
+
+        Try
+            Select Case BytesCaller
+                Case Is >= 1099511627776
+                    DoubleBytes = CDbl(BytesCaller / 1099511627776) 'TB
+                    Return FormatNumber(DoubleBytes, 2) & " TB"
+                Case 1073741824 To 1099511627775
+                    DoubleBytes = CDbl(BytesCaller / 1073741824) 'GB
+                    Return FormatNumber(DoubleBytes, 2) & " GB"
+                Case 1048576 To 1073741823
+                    DoubleBytes = CDbl(BytesCaller / 1048576) 'MB
+                    Return FormatNumber(DoubleBytes, 2) & " MB"
+                Case 1024 To 1048575
+                    DoubleBytes = CDbl(BytesCaller / 1024) 'KB
+                    Return FormatNumber(DoubleBytes, 2) & " KB"
+                Case 0 To 1023
+                    DoubleBytes = BytesCaller ' bytes
+                    Return FormatNumber(DoubleBytes, 2) & " bytes"
+                Case Else
+                    Return ""
+            End Select
+        Catch
+            Return "0 bytes"
+        End Try
+    End Function
 #End Region
 
 #Region "Progress Panel"
@@ -197,6 +225,21 @@ Public Class frm_Main
             Dim D As New frm_DeviceComm(Students, Staffs.ToList, YearShift.Year, YearShift.Shift, YearShift.Course)
             D.ShowDialog()
         End If
+    End Sub
+
+    Private Sub btn_CompactDatabase_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_CompactDatabase.ItemClick
+        Try
+            Dim SizePrevious As Integer = Database.GetSize
+            Database.Compact()
+            Dim SizeAfter As Integer = Database.GetSize
+            DevExpress.XtraEditors.XtraMessageBox.Show(String.Format("Successfully shrinked the database!{0}{0}Size Before Shrink:{1}{0}Size After Shrink: {2}", vbNewLine, FormatBytes(SizePrevious), FormatBytes(SizeAfter)), "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Catch ex As Exception
+            DevExpress.XtraEditors.XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub btn_Exit_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_Exit.ItemClick
+        Me.Close()
     End Sub
 #End Region
 
