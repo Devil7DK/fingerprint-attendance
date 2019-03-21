@@ -109,6 +109,10 @@ Namespace Database
                 Return Command.ExecuteNonQuery = 1
             End Using
         End Function
+
+        Public Shared Function Remove(ByVal Student As Objects.Student) As Boolean
+            Return Common.Remove(Student.ID, TableName)
+        End Function
 #End Region
 
     End Class
