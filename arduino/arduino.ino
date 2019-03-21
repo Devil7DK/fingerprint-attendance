@@ -1133,12 +1133,12 @@ void readFile(char* path) {
 void writeFile(char* path) {
   File file = SD.open(path, O_WRITE | O_CREAT | O_TRUNC);
   boolean writeFile = false;
-
-  while (!Serial.available()) {
-    delay(500);
-  }
   
   if (file) {
+    Serial.println("OK");
+    while (!Serial.available()) {
+      delay(500);
+    }      
     while (true) {
       delay(3);
       if (Serial.available() > 0) {
@@ -1195,8 +1195,9 @@ void displayUSB() {
         btn_back.drawButton();
     
     if (btn_back.justPressed()) {
-        btn_back.drawButton(true);        
-        return false;
+        btn_back.drawButton(true);
+        loaded = false;
+        return;
     }
 
     command = "";
