@@ -311,6 +311,7 @@ boolean display_enroll = false;
 enum types type_enroll = TStudent;
 int index_enroll = 0;
 
+int staffID = -1;
 boolean display_mark = false;
 
 int fingerprintID = 0;
@@ -333,6 +334,24 @@ bool Touch_getXY(void)
         pixel_y = map(p.y, TS_TOP, TS_BOT, 0, tft.height());
     }
     return pressed;
+}
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
+ 
+int freeMemory() {
+  char top;
+#ifdef __arm__
+  return &top - reinterpret_cast<char*>(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+  return &top - __brkval;
+#else  // __arm__
+  return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+#endif  // __arm__
 }
 
 void displayHome() {
@@ -921,6 +940,7 @@ AUTHLOOP:
     if (fingerprintID > 0 && fingerprintID < 101) {
       for (int i = 0; i < staffs.Size(); i++) {
         if (staffs[i]->fingerprint == fingerprintID) {
+          staffID = staffs[i]->id;
           showAuthFPIcon(String("  Authendicated!"), GREEN, 2);
           return true;
         }
@@ -1038,12 +1058,20 @@ char* getDate() {
 
 void displayMark(int hour) {
   char* date = getDate();
-  Adafruit_GFX_Button btn_back;
+  
+  Attendance *attendance = new Attendance(staffID, date, hour);
+  readAttendance(attendance, students);
+  
+  freeMemory();
+  
+  Adafruit_GFX_Button btn_back, btn_save;
 
   btn_back.initButton(&tft, 25, 20, 50, 40, BLACK, WHITE, BLACK, "<-", 2);
+  btn_save.initButton(&tft, 190, 20, 100, 40, BLACK, WHITE, BLACK, "Save", 2);
   
   tft.fillScreen(WHITE);
   btn_back.drawButton(false);
+  btn_save.drawButton(false);
 
   boolean writeicon = true;
 
@@ -1063,38 +1091,74 @@ void displayMark(int hour) {
 
   while (true) {
 AUTHLOOP:
-    if (writeicon) {
+    if (writeicon) {      
       showAuthFPIcon(String("   Place finger"), BLUE, 0);
       writeicon = false;
+      Serial.println(freeMemory());
     }
     
     bool down = Touch_getXY();
 
     btn_back.press(down && btn_back.contains(pixel_x, pixel_y));
+    btn_save.press(down && btn_save.contains(pixel_x, pixel_y));
     
     if (btn_back.justReleased())
         btn_back.drawButton();
+    if (btn_save.justReleased())
+        btn_save.drawButton();
     
     if (btn_back.justPressed()) {
         btn_back.drawButton(true);        
         return false;
     }
+    if (btn_save.justPressed()) {
+        btn_save.drawButton(true);
+        delay(100);
 
+        tft.fillScreen(WHITE);
+        tft.setCursor(60, 150);
+        tft.setTextColor(GREEN);
+        tft.setTextSize(2);
+        tft.print("Saving...");
+
+        writeAttendance(attendance);
+        delay(2000);
+        
+        return false;
+    }
+
+    Serial.println("Reading FP");
     fingerprintID = getFingerprintID();
     delay(50);
     if (fingerprintID > 0 && fingerprintID < 101) {
       for (int i = 0; i < staffs.Size(); i++) {
         if (staffs[i]->fingerprint == fingerprintID) {
-          showAuthFPIcon(String("  Authendicated!"), GREEN, 2);
-          return true;
+          showAuthFPIcon(String("   Not Allowed!"), GREEN, 2);
+          writeicon = true;
+          goto AUTHLOOP;
         }
       }
     } else if (fingerprintID > 100) {
-      showAuthFPIcon(String("   Not Allowed!"), RED, 2);
-      writeicon = true;
-      goto AUTHLOOP;
+      for (int i = 0; i < students.Size(); i++) {
+        if (students[i]->fingerprint == fingerprintID) {
+          for (int j = 0; j < attendance->items.Size(); j++) {
+            if (attendance->items[j]->id == students[i]->id) {
+              if (attendance->items[j]->status == Present) {
+                showAuthFPIcon(String("  Already Marked!"), GREEN, 2);
+              } else {
+                attendance->items[j]->status = Present;
+                char* msg = new char[17];
+                sprintf(msg, " %s%d%s Present!", prefix.c_str(), shift - 1, students[i]->regno.c_str());
+                showAuthFPIcon(String(msg), GREEN, 2);
+              }
+            }
+          }
+          writeicon = true;
+          goto AUTHLOOP;
+        }
+      }
     }else if (fingerprintID == -2) {
-      showAuthFPIcon(String("  Authendication\n       Failed"), RED, 2);
+      showAuthFPIcon(String("Recognition Failed"), RED, 2);
       writeicon = true;
       goto AUTHLOOP;
     }
@@ -1254,7 +1318,7 @@ void setup() {
     Serial.println("SD Card: Initialization failed!");
     return;
   }
-
+  
   // Fingerprint
   finger.begin(57600);
   
@@ -1272,8 +1336,9 @@ void setup() {
   }
 }
 
-void loop() {  
+void loop() {
   displayHome();
+  freeMemory();
 
   if (display_enroll) {
     display_enroll = false;
