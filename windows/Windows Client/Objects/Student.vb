@@ -46,5 +46,11 @@ Namespace Objects
         End Sub
 #End Region
 
+#Region "Subs"
+        Public Overrides Function ToString() As String
+            Return Name
+        End Function
+#End Region
+
     End Class
 End Namespace
