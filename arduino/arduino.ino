@@ -1231,6 +1231,10 @@ void fileExists(char* path) {
     Serial.println("false");
 }
 
+void deleteFile(char* path) {
+  SD.remove(path);
+}
+
 void displayUSB() {
   Serial.flush();
   Adafruit_GFX_Button btn_back;
@@ -1287,6 +1291,8 @@ void displayUSB() {
         Serial.println("---EOF---");
       } else if (cmd.equals("writefile")) {
         writeFile(parm.c_str());
+      } else if (cmd.equals("deletefile")) {
+        deleteFile(parm.c_str());
       } else if (cmd.equals("listfiles")) {
         Serial.println("---SOL---");
         File path = SD.open(parm.c_str());
