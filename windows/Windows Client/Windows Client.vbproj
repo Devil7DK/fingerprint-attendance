@@ -102,6 +102,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\Attendances.vb" />
     <Compile Include="Database\Common.vb" />
     <Compile Include="Database\Courses.vb" />
     <Compile Include="Database\Staffs.vb" />
