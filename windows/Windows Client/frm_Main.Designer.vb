@@ -22,6 +22,9 @@ Partial Class frm_Main
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm_Main))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu(Me.components)
+        Me.btn_CompactDatabase = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Exit = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
         Me.rp_Home = New DevExpress.XtraBars.Ribbon.RibbonPage()
@@ -38,11 +41,12 @@ Partial Class frm_Main
         Me.tp_Courses = New DevExpress.XtraTab.XtraTabPage()
         Me.gc_Courses = New DevExpress.XtraGrid.GridControl()
         Me.gv_Courses = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.tp_Attendance = New DevExpress.XtraTab.XtraTabPage()
+        Me.gc_Attendance = New DevExpress.XtraGrid.GridControl()
+        Me.gv_Attendance = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
-        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu(Me.components)
-        Me.btn_CompactDatabase = New DevExpress.XtraBars.BarButtonItem()
-        Me.btn_Exit = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tc_Main.SuspendLayout()
         Me.tp_Students.SuspendLayout()
@@ -54,7 +58,9 @@ Partial Class frm_Main
         Me.tp_Courses.SuspendLayout()
         CType(Me.gc_Courses, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gv_Courses, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tp_Attendance.SuspendLayout()
+        CType(Me.gc_Attendance, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gv_Attendance, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -75,6 +81,29 @@ Partial Class frm_Main
         Me.RibbonControl.Size = New System.Drawing.Size(603, 143)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         Me.RibbonControl.Toolbar.ShowCustomizeItem = False
+        '
+        'ApplicationMenu
+        '
+        Me.ApplicationMenu.ItemLinks.Add(Me.btn_CompactDatabase)
+        Me.ApplicationMenu.ItemLinks.Add(Me.btn_Exit, True)
+        Me.ApplicationMenu.Name = "ApplicationMenu"
+        Me.ApplicationMenu.Ribbon = Me.RibbonControl
+        '
+        'btn_CompactDatabase
+        '
+        Me.btn_CompactDatabase.Caption = "Compact Database"
+        Me.btn_CompactDatabase.Description = "Shrinks & Rebuilds the Database"
+        Me.btn_CompactDatabase.Id = 3
+        Me.btn_CompactDatabase.ImageOptions.SvgImage = CType(resources.GetObject("btn_CompactDatabase.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_CompactDatabase.Name = "btn_CompactDatabase"
+        '
+        'btn_Exit
+        '
+        Me.btn_Exit.Caption = "Exit"
+        Me.btn_Exit.Description = "Close & Exit the Application"
+        Me.btn_Exit.Id = 4
+        Me.btn_Exit.ImageOptions.SvgImage = CType(resources.GetObject("btn_Exit.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Exit.Name = "btn_Exit"
         '
         'btn_Refresh
         '
@@ -126,7 +155,7 @@ Partial Class frm_Main
         Me.tc_Main.SelectedTabPage = Me.tp_Students
         Me.tc_Main.Size = New System.Drawing.Size(603, 275)
         Me.tc_Main.TabIndex = 2
-        Me.tc_Main.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tp_Students, Me.tp_Staffs, Me.tp_Courses})
+        Me.tc_Main.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tp_Students, Me.tp_Staffs, Me.tp_Courses, Me.tp_Attendance})
         '
         'tp_Students
         '
@@ -206,32 +235,36 @@ Partial Class frm_Main
         Me.gv_Courses.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
         Me.gv_Courses.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom
         '
+        'tp_Attendance
+        '
+        Me.tp_Attendance.Controls.Add(Me.gc_Attendance)
+        Me.tp_Attendance.Name = "tp_Attendance"
+        Me.tp_Attendance.Size = New System.Drawing.Size(597, 247)
+        Me.tp_Attendance.Text = "Attendance"
+        '
+        'gc_Attendance
+        '
+        Me.gc_Attendance.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gc_Attendance.Location = New System.Drawing.Point(0, 0)
+        Me.gc_Attendance.MainView = Me.gv_Attendance
+        Me.gc_Attendance.MenuManager = Me.RibbonControl
+        Me.gc_Attendance.Name = "gc_Attendance"
+        Me.gc_Attendance.Size = New System.Drawing.Size(597, 247)
+        Me.gc_Attendance.TabIndex = 2
+        Me.gc_Attendance.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gv_Attendance})
+        '
+        'gv_Attendance
+        '
+        Me.gv_Attendance.GridControl = Me.gc_Attendance
+        Me.gv_Attendance.Name = "gv_Attendance"
+        Me.gv_Attendance.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.[True]
+        Me.gv_Attendance.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
+        Me.gv_Attendance.OptionsDetail.AllowExpandEmptyDetails = True
+        Me.gv_Attendance.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom
+        '
         'dlg_SelectImage
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
-        '
-        'ApplicationMenu
-        '
-        Me.ApplicationMenu.ItemLinks.Add(Me.btn_CompactDatabase)
-        Me.ApplicationMenu.ItemLinks.Add(Me.btn_Exit, True)
-        Me.ApplicationMenu.Name = "ApplicationMenu"
-        Me.ApplicationMenu.Ribbon = Me.RibbonControl
-        '
-        'btn_CompactDatabase
-        '
-        Me.btn_CompactDatabase.Caption = "Compact Database"
-        Me.btn_CompactDatabase.Description = "Shrinks & Rebuilds the Database"
-        Me.btn_CompactDatabase.Id = 3
-        Me.btn_CompactDatabase.ImageOptions.SvgImage = CType(resources.GetObject("btn_CompactDatabase.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.btn_CompactDatabase.Name = "btn_CompactDatabase"
-        '
-        'btn_Exit
-        '
-        Me.btn_Exit.Caption = "Exit"
-        Me.btn_Exit.Description = "Close & Exit the Application"
-        Me.btn_Exit.Id = 4
-        Me.btn_Exit.ImageOptions.SvgImage = CType(resources.GetObject("btn_Exit.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.btn_Exit.Name = "btn_Exit"
         '
         'frm_Main
         '
@@ -247,6 +280,7 @@ Partial Class frm_Main
         Me.Text = "Students Attendance Management System"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tc_Main.ResumeLayout(False)
         Me.tp_Students.ResumeLayout(False)
@@ -258,7 +292,9 @@ Partial Class frm_Main
         Me.tp_Courses.ResumeLayout(False)
         CType(Me.gc_Courses, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gv_Courses, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tp_Attendance.ResumeLayout(False)
+        CType(Me.gc_Attendance, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gv_Attendance, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -285,4 +321,7 @@ Partial Class frm_Main
     Friend WithEvents ApplicationMenu As DevExpress.XtraBars.Ribbon.ApplicationMenu
     Friend WithEvents btn_CompactDatabase As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents btn_Exit As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents tp_Attendance As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents gc_Attendance As DevExpress.XtraGrid.GridControl
+    Friend WithEvents gv_Attendance As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

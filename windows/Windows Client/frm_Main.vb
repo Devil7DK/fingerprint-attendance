@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports DevExpress.Data
 Imports DevExpress.XtraBars
+Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
@@ -41,6 +42,16 @@ Public Class frm_Main
             gc_Staffs.RefreshDataSource()
         End Set
     End Property
+
+    Property Attendances As BindingList(Of Objects.Attendance)
+        Get
+            Return CType(gc_Attendance.DataSource, BindingList(Of Objects.Attendance))
+        End Get
+        Set(value As BindingList(Of Objects.Attendance))
+            gc_Attendance.DataSource = value
+            gc_Attendance.RefreshDataSource()
+        End Set
+    End Property
 #End Region
 
 #Region "Subs"
@@ -50,14 +61,17 @@ Public Class frm_Main
         Dim Courses As New BindingList(Of Objects.Course) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
         Dim Staffs As New BindingList(Of Objects.Staff) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
         Dim Students As New BindingList(Of Objects.Student) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
+        Dim Attendances As New BindingList(Of Objects.Attendance) With {.AllowNew = True, .AllowEdit = True, .AllowRemove = True}
         Await Task.Run(Sub()
                            Courses = Database.Courses.Load(False)
                            Staffs = Database.Staffs.Load(False)
-                           Students = Database.Students.Load(Courses.ToList, True)
+                           Students = Database.Students.Load(Courses.ToList, False)
+                           Attendances = Database.Attendances.Load(True, Courses.ToList, Staffs.ToList, Students.ToList)
                        End Sub)
         Me.Courses = Courses
         Me.Staffs = Staffs
         Me.Students = Students
+        Me.Attendances = Attendances
 
         HideProgressPanel()
     End Function
@@ -156,11 +170,63 @@ Public Class frm_Main
         End If
     End Sub
 
+    Private Sub gv_Attendances_RowUpdated(sender As Object, e As RowObjectEventArgs) Handles gv_Attendance.RowUpdated
+        Dim Item As Objects.Attendance = CType(e.Row, Objects.Attendance)
+        If e.RowHandle = DevExpress.XtraGrid.GridControl.NewItemRowHandle Then
+            If Database.Attendances.Add(Item) Then
+                gc_Attendance.RefreshDataSource()
+            Else
+                Attendances.Remove(Item)
+                gc_Attendance.RefreshDataSource()
+            End If
+        Else
+            If Database.Attendances.Update(Item) Then
+                gc_Attendance.RefreshDataSource()
+            Else
+                DevExpress.XtraEditors.XtraMessageBox.Show("Unable to save edited values to database!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+        End If
+    End Sub
+
     Private Sub gv_Students_CustomRowCellEdit(sender As Object, e As CustomRowCellEditEventArgs) Handles gv_Students.CustomRowCellEdit
         If e.Column.FieldName = "Course" Then
             Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
             cmb.Items.AddRange(Courses.ToArray)
             e.RepositoryItem = cmb
+        End If
+    End Sub
+
+    Private Sub gv_Attendance_CustomRowCellEdit(sender As Object, e As CustomRowCellEditEventArgs) Handles gv_Attendance.CustomRowCellEdit
+        If e.Column.FieldName = "Hour" Then
+            Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+            cmb.Items.AddRange({1, 2, 3, 4, 5})
+            e.RepositoryItem = cmb
+        ElseIf e.Column.FieldName = "Course" Then
+            Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+            cmb.Items.AddRange(Courses.ToArray)
+            e.RepositoryItem = cmb
+        ElseIf e.Column.FieldName = "Year" Then
+            Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+            For i As Integer = Now.Year To 2000 Step -1
+                cmb.Items.Add(i)
+            Next
+            e.RepositoryItem = cmb
+        ElseIf e.Column.FieldName = "Staff" Then
+            Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+            cmb.Items.AddRange(Staffs.ToArray)
+            e.RepositoryItem = cmb
+        End If
+    End Sub
+
+    Private Sub gc_Attendance_ViewRegistered(sender As Object, e1 As ViewOperationEventArgs) Handles gc_Attendance.ViewRegistered
+        If e1.View.IsDetailView Then
+            AddHandler CType(e1.View, GridView).CustomRowCellEdit, Sub(ByVal s As Object, e As CustomRowCellEditEventArgs)
+                                                                       If e.Column.FieldName = "Student" Then
+                                                                           Dim cmb As New DevExpress.XtraEditors.Repository.RepositoryItemComboBox
+                                                                           cmb.Items.AddRange(Students.ToArray)
+                                                                           e.RepositoryItem = cmb
+                                                                       End If
+                                                                   End Sub
         End If
     End Sub
 
@@ -180,6 +246,13 @@ Public Class frm_Main
 
     Private Sub gv_Students_RowDeleting(sender As Object, e As RowDeletingEventArgs) Handles gv_Students.RowDeleting
         If Not Database.Students.Remove(CType(e.Row, Objects.Student)) Then
+            e.Cancel = True
+            DevExpress.XtraEditors.XtraMessageBox.Show("Unable to remove selected item!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
+    End Sub
+
+    Private Sub gv_Attendance_RowDeleting(sender As Object, e As RowDeletingEventArgs) Handles gv_Attendance.RowDeleting
+        If Not Database.Attendances.Remove(CType(e.Row, Objects.Attendance)) Then
             e.Cancel = True
             DevExpress.XtraEditors.XtraMessageBox.Show("Unable to remove selected item!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
@@ -205,6 +278,13 @@ Public Class frm_Main
             e.Handled = True
         End If
     End Sub
+
+    Private Sub gc_Attendance_ProcessGridKey(sender As Object, e As KeyEventArgs) Handles gc_Attendance.ProcessGridKey
+        If e.KeyData = Keys.Delete Then
+            gv_Attendance.DeleteSelectedRows()
+            e.Handled = True
+        End If
+    End Sub
 #End Region
 
 #Region "Form Events"
@@ -222,7 +302,7 @@ Public Class frm_Main
         Dim YearShift As New frm_SelectYearShift(Courses.ToList)
         If YearShift.ShowDialog = DialogResult.OK Then
             Dim Students As List(Of Objects.Student) = Me.Students.ToList.FindAll(Function(c) c.AdmittedYear = YearShift.Year And c.Shift = YearShift.Shift And c.Course.ID = YearShift.Course.ID)
-            Dim D As New frm_DeviceComm(Students, Staffs.ToList, YearShift.Year, YearShift.Shift, YearShift.Course)
+            Dim D As New frm_DeviceComm(Students, Staffs.ToList, YearShift.Year, YearShift.Shift, YearShift.Course, Attendances.ToList)
             D.ShowDialog()
         End If
     End Sub
