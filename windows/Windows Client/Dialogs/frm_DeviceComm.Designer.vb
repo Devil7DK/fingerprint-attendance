@@ -49,7 +49,12 @@ Partial Class frm_DeviceComm
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.btn_Staffs_Export = New DevExpress.XtraEditors.SimpleButton()
         Me.btn_Staffs_Sync = New DevExpress.XtraEditors.SimpleButton()
+        Me.tp_Attendance = New DevExpress.XtraTab.XtraTabPage()
         Me.ArduinoPort = New System.IO.Ports.SerialPort(Me.components)
+        Me.gc_Attendances = New DevExpress.XtraGrid.GridControl()
+        Me.gv_Attendances = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
+        Me.btn_Attendance_Import = New DevExpress.XtraEditors.SimpleButton()
         CType(Me.BarManager, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lst_Ports_Edit, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -64,6 +69,11 @@ Partial Class frm_DeviceComm
         CType(Me.gv_Staffs, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
+        Me.tp_Attendance.SuspendLayout()
+        CType(Me.gc_Attendances, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gv_Attendances, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.PanelControl2.SuspendLayout()
         Me.SuspendLayout()
         '
         'BarManager
@@ -186,7 +196,7 @@ Partial Class frm_DeviceComm
         Me.tc_Main.SelectedTabPage = Me.tp_Students
         Me.tc_Main.Size = New System.Drawing.Size(800, 403)
         Me.tc_Main.TabIndex = 4
-        Me.tc_Main.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tp_Students, Me.tp_Staffs})
+        Me.tc_Main.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tp_Students, Me.tp_Staffs, Me.tp_Attendance})
         '
         'tp_Students
         '
@@ -306,6 +316,53 @@ Partial Class frm_DeviceComm
         Me.btn_Staffs_Sync.TabIndex = 0
         Me.btn_Staffs_Sync.Text = "Sync"
         '
+        'tp_Attendance
+        '
+        Me.tp_Attendance.Controls.Add(Me.gc_Attendances)
+        Me.tp_Attendance.Controls.Add(Me.PanelControl2)
+        Me.tp_Attendance.Name = "tp_Attendance"
+        Me.tp_Attendance.Size = New System.Drawing.Size(794, 375)
+        Me.tp_Attendance.Text = "Attendance"
+        '
+        'gc_Attendances
+        '
+        Me.gc_Attendances.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gc_Attendances.Location = New System.Drawing.Point(0, 0)
+        Me.gc_Attendances.MainView = Me.gv_Attendances
+        Me.gc_Attendances.MenuManager = Me.BarManager
+        Me.gc_Attendances.Name = "gc_Attendances"
+        Me.gc_Attendances.Size = New System.Drawing.Size(794, 341)
+        Me.gc_Attendances.TabIndex = 2
+        Me.gc_Attendances.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gv_Attendances})
+        '
+        'gv_Attendances
+        '
+        Me.gv_Attendances.GridControl = Me.gc_Attendances
+        Me.gv_Attendances.Name = "gv_Attendances"
+        Me.gv_Attendances.OptionsBehavior.Editable = False
+        Me.gv_Attendances.OptionsBehavior.ReadOnly = True
+        Me.gv_Attendances.OptionsView.ShowGroupPanel = False
+        '
+        'PanelControl2
+        '
+        Me.PanelControl2.Controls.Add(Me.btn_Attendance_Import)
+        Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.PanelControl2.Location = New System.Drawing.Point(0, 341)
+        Me.PanelControl2.Name = "PanelControl2"
+        Me.PanelControl2.Size = New System.Drawing.Size(794, 34)
+        Me.PanelControl2.TabIndex = 3
+        '
+        'btn_Attendance_Import
+        '
+        Me.btn_Attendance_Import.Dock = System.Windows.Forms.DockStyle.Left
+        Me.btn_Attendance_Import.ImageOptions.SvgImage = CType(resources.GetObject("SimpleButton1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Attendance_Import.ImageOptions.SvgImageSize = New System.Drawing.Size(24, 24)
+        Me.btn_Attendance_Import.Location = New System.Drawing.Point(2, 2)
+        Me.btn_Attendance_Import.Name = "btn_Attendance_Import"
+        Me.btn_Attendance_Import.Size = New System.Drawing.Size(81, 30)
+        Me.btn_Attendance_Import.TabIndex = 1
+        Me.btn_Attendance_Import.Text = "Import"
+        '
         'frm_DeviceComm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -333,6 +390,11 @@ Partial Class frm_DeviceComm
         CType(Me.gv_Staffs, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl1.ResumeLayout(False)
+        Me.tp_Attendance.ResumeLayout(False)
+        CType(Me.gc_Attendances, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gv_Attendances, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.PanelControl2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -364,4 +426,9 @@ Partial Class frm_DeviceComm
     Friend WithEvents PanelControl1 As DevExpress.XtraEditors.PanelControl
     Friend WithEvents btn_Staffs_Export As DevExpress.XtraEditors.SimpleButton
     Friend WithEvents btn_Staffs_Sync As DevExpress.XtraEditors.SimpleButton
+    Friend WithEvents tp_Attendance As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents gc_Attendances As DevExpress.XtraGrid.GridControl
+    Friend WithEvents gv_Attendances As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents PanelControl2 As DevExpress.XtraEditors.PanelControl
+    Friend WithEvents btn_Attendance_Import As DevExpress.XtraEditors.SimpleButton
 End Class

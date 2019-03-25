@@ -29,17 +29,29 @@ Public Class frm_DeviceComm
         End Set
     End Property
 
+    Property Attendances As List(Of Objects.Attendance)
+        Get
+            If gc_Attendances.DataSource Is Nothing Then gc_Attendances.DataSource = New List(Of Objects.Attendance)
+            Return CType(gc_Attendances.DataSource, List(Of Objects.Attendance))
+        End Get
+        Set(value As List(Of Objects.Attendance))
+            gc_Attendances.DataSource = value
+            gc_Attendances.RefreshDataSource()
+        End Set
+    End Property
+
     Property Year As Integer = 2016
     Property Shift As Enums.Shifts = Enums.Shifts.Shift1
     Property Course As Objects.Course = Nothing
 #End Region
 
 #Region "Constructor"
-    Sub New(ByVal Students As List(Of Objects.Student), ByVal Staffs As List(Of Objects.Staff), ByVal Year As Integer, ByVal Shift As Enums.Shifts, ByVal Course As Objects.Course)
+    Sub New(ByVal Students As List(Of Objects.Student), ByVal Staffs As List(Of Objects.Staff), ByVal Year As Integer, ByVal Shift As Enums.Shifts, ByVal Course As Objects.Course, ByVal Attendances As List(Of Objects.Attendance))
         InitializeComponent()
 
         Me.Students = Students
         Me.Staffs = Staffs
+        Me.Attendances = Attendances
         Me.Year = Year
         Me.Shift = Shift
         Me.Course = Course
@@ -127,13 +139,23 @@ Public Class frm_DeviceComm
             Invoke(Sub() ShowProgressPanel())
             Await Task.Run(Sub()
                                ArduinoPort.ReadExisting()
+
                                ArduinoPort.WriteLine("writefile /prefix")
                                Threading.Thread.Sleep(500)
-                               ArduinoPort.WriteLine(String.Format("{0}{1}{2}", (New Date(Year, 1, 1)).ToString("yy"), Course.Prefix, CInt(Shift)))
+                               ArduinoPort.WriteLine("---SOF---")
                                Threading.Thread.Sleep(500)
+                               ArduinoPort.WriteLine(String.Format("{0}{1}", (New Date(Year, 1, 1)).ToString("yy"), Course.Prefix, CInt(Shift)))
+                               Threading.Thread.Sleep(500)
+                               ArduinoPort.WriteLine("---EOF---")
+                               Threading.Thread.Sleep(500)
+
                                ArduinoPort.WriteLine("writefile /shift")
                                Threading.Thread.Sleep(500)
+                               ArduinoPort.WriteLine("---SOF---")
+                               Threading.Thread.Sleep(500)
                                ArduinoPort.WriteLine(CInt(Shift) + 1)
+                               Threading.Thread.Sleep(500)
+                               ArduinoPort.WriteLine("---EOF---")
                                Threading.Thread.Sleep(500)
 
                                ArduinoPort.ReadExisting()
@@ -239,6 +261,75 @@ Public Class frm_DeviceComm
             DevExpress.XtraEditors.XtraMessageBox.Show("COM Port is not open!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Function
+
+    Private Async Function ImportAttendance() As Task
+        If ArduinoPort.IsOpen And Staffs.Count > 0 Then
+            Invoke(Sub() ShowProgressPanel())
+            Await Task.Run(Sub()
+                               ArduinoPort.ReadExisting()
+                               ArduinoPort.WriteLine("listfiles /")
+                               Threading.Thread.Sleep(500)
+
+                               Dim Files As New List(Of String)
+                               While ArduinoPort.BytesToRead > 0
+                                   Dim Str As String = ArduinoPort.ReadLine.Trim
+                                   If Not Str.StartsWith("---") Then
+                                       Files.Add(Str)
+                                   End If
+                               End While
+
+                               For Each File As String In Files
+                                   If File.Length = 8 And File.Contains("_") Then
+                                       Dim [Date] As Date = Date.ParseExact(File.Split("_")(0), "ddMMyy", Globalization.CultureInfo.InvariantCulture)
+                                       Dim Hour As Integer = CInt(File.Split("_")(1))
+                                       Dim StaffID As Integer = -1
+
+                                       Dim Attendance As Objects.Attendance = Attendances.Find(Function(c) c.Course.ID = Course.ID AndAlso c.Date = [Date] AndAlso c.Hour = Hour AndAlso c.Shift = Shift AndAlso c.Year = Year)
+                                       If Attendance Is Nothing Then
+                                           Dim Data As New System.ComponentModel.BindingList(Of Objects.Attendance.Item)
+                                           For Each Student As Objects.Student In Students
+                                               Data.Add(New Objects.Attendance.Item(Student, Enums.AttendanceState.Absent))
+                                           Next
+                                           Attendance = New Objects.Attendance(-1, [Date], Hour, Course, Year, Shift, Staffs(0), Data)
+                                           Database.Attendances.Add(Attendance)
+                                           Attendances.Add(Attendance)
+                                       End If
+
+                                       ArduinoPort.WriteLine(String.Format("readfile /{0}", File))
+                                       Threading.Thread.Sleep(500)
+
+                                       Dim Index As Integer = 0
+                                       While ArduinoPort.BytesToRead > 0
+                                           Dim Line As String = ArduinoPort.ReadLine.Trim
+                                           If Not Line.StartsWith("---") Then
+                                               If Index = 0 Then
+                                                   StaffID = CInt(Line)
+                                                   Attendance.Staff = Staffs.Find(Function(c) c.ID = StaffID)
+                                               ElseIf Line.Contains(";") Then
+                                                   Dim StudentID As Integer = CInt(Line.Split(";")(0))
+                                                   Dim State As Enums.AttendanceState = CInt(Line.Split(";")(1))
+
+                                                   Dim AttendanceData As Objects.Attendance.Item = Attendance.AttendanceData.ToList().Find(Function(c) c.StudentID = StudentID)
+                                                   If AttendanceData IsNot Nothing Then AttendanceData.AttendanceState = State
+                                               End If
+                                               Index += 1
+                                           End If
+                                       End While
+
+                                       Database.Attendances.Update(Attendance)
+                                       ArduinoPort.WriteLine(String.Format("deletefile /{0}", File))
+                                       Threading.Thread.Sleep(500)
+                                   End If
+                               Next
+
+                               gc_Attendances.RefreshDataSource()
+                               Invoke(Sub() DevExpress.XtraEditors.XtraMessageBox.Show("Successfully imported attendance data from device!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information))
+                           End Sub)
+            Invoke(Sub() HideProgressPanel())
+        Else
+            DevExpress.XtraEditors.XtraMessageBox.Show("COM Port is not open!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+    End Function
 #End Region
 
 #Region "Form Events"
@@ -278,6 +369,10 @@ Public Class frm_DeviceComm
 
     Private Async Sub btn_Staffs_Export_Click(sender As Object, e As EventArgs) Handles btn_Staffs_Export.Click
         Await ExportStaffs()
+    End Sub
+
+    Private Async Sub btn_Attendance_Import_Click(sender As Object, e As EventArgs) Handles btn_Attendance_Import.Click
+        Await ImportAttendance()
     End Sub
 #End Region
 
