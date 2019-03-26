@@ -25,6 +25,8 @@ Namespace Objects
             Dim CurrentAttendanceData As List(Of Attendance) = AllAttendanceData.FindAll(Function(c) c.Course.ID = Course.ID AndAlso c.Year = Year AndAlso c.Shift = Shift AndAlso (c.Date >= FromDate AndAlso c.Date <= ToDate))
             Dim CurrentStudents As List(Of Student) = AllStudents.FindAll(Function(c) c.Course.ID = Course.ID AndAlso c.AdmittedYear = Year AndAlso c.Shift = Shift)
 
+            CurrentStudents.Sort(New Utils.StudentComparer)
+
             Me.Students = CurrentStudents
             Me.AttendanceData = New List(Of DateAttendance)
 
