@@ -47,12 +47,13 @@ Namespace Objects
         Public Class Item
 
 #Region "Properties"
+            Dim TmpID As Integer = -1
             Property StudentID As Integer
                 Get
-                    Return If(Student Is Nothing, -1, Student.ID)
+                    Return If(Student Is Nothing, TmpID, Student.ID)
                 End Get
                 Set(value As Integer)
-
+                    TmpID = value
                 End Set
             End Property
 
