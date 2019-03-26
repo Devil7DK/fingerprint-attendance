@@ -349,6 +349,28 @@ Public Class frm_Main
                            End If
                        End Sub)
     End Sub
+
+    Private Async Sub btn_Report_Date_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_Report_Date.ItemClick
+        Dim D As New frm_SelectDate(Courses.ToList)
+        If D.ShowDialog(Me) = DialogResult.OK Then
+            If dlg_SaveExcel.ShowDialog(Me) = DialogResult.OK Then
+                Try
+                    Await Task.Run(Sub()
+                                       Dim Data As New Objects.AttendanceDateHour(Students.ToList, Attendances.ToList)
+                                       Data.Consolidate(D.DateFrom, D.DateTo, D.Course, D.Year, D.Shift)
+                                       Data.GenerateExcel(dlg_SaveExcel.FileName)
+                                       Invoke(Sub()
+                                                  If DevExpress.XtraEditors.XtraMessageBox.Show("Report generated successfully & saved to selected location. Do you want to open generated file...?", "Done", MessageBoxButtons.YesNo, MessageBoxIcon.Information) = DialogResult.Yes Then
+                                                      Process.Start(dlg_SaveExcel.FileName)
+                                                  End If
+                                              End Sub)
+                                   End Sub)
+                Catch ex As Exception
+                    DevExpress.XtraEditors.XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+            End If
+        End If
+    End Sub
 #End Region
 
 End Class

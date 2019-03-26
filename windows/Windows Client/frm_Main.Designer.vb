@@ -19,16 +19,19 @@ Partial Class frm_Main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm_Main))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu()
+        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu(Me.components)
         Me.btn_CompactDatabase = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Exit = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Report_Percentage = New DevExpress.XtraBars.BarButtonItem()
         Me.rp_Home = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpg_Database = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpg_Device = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.rpg_Reports = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.tc_Main = New DevExpress.XtraTab.XtraTabControl()
         Me.tp_Students = New DevExpress.XtraTab.XtraTabPage()
@@ -44,8 +47,8 @@ Partial Class frm_Main
         Me.gc_Attendance = New DevExpress.XtraGrid.GridControl()
         Me.gv_Attendance = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
-        Me.rpg_Reports = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.btn_Report_Percentage = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Report_Date = New DevExpress.XtraBars.BarButtonItem()
+        Me.dlg_SaveExcel = New System.Windows.Forms.SaveFileDialog()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -68,9 +71,9 @@ Partial Class frm_Main
         '
         Me.RibbonControl.ApplicationButtonDropDownControl = Me.ApplicationMenu
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm, Me.btn_CompactDatabase, Me.btn_Exit, Me.btn_Report_Percentage})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm, Me.btn_CompactDatabase, Me.btn_Exit, Me.btn_Report_Percentage, Me.btn_Report_Date})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 6
+        Me.RibbonControl.MaxItemId = 7
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rp_Home})
         Me.RibbonControl.ShowCategoryInCaption = False
@@ -120,6 +123,13 @@ Partial Class frm_Main
         Me.btn_Comm.ImageOptions.SvgImage = CType(resources.GetObject("btn_Comm.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.btn_Comm.Name = "btn_Comm"
         '
+        'btn_Report_Percentage
+        '
+        Me.btn_Report_Percentage.Caption = "Percentage"
+        Me.btn_Report_Percentage.Id = 5
+        Me.btn_Report_Percentage.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Percentage.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Report_Percentage.Name = "btn_Report_Percentage"
+        '
         'rp_Home
         '
         Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database, Me.rpg_Device, Me.rpg_Reports})
@@ -139,6 +149,14 @@ Partial Class frm_Main
         Me.rpg_Device.Name = "rpg_Device"
         Me.rpg_Device.ShowCaptionButton = False
         Me.rpg_Device.Text = "Device"
+        '
+        'rpg_Reports
+        '
+        Me.rpg_Reports.ItemLinks.Add(Me.btn_Report_Percentage)
+        Me.rpg_Reports.ItemLinks.Add(Me.btn_Report_Date)
+        Me.rpg_Reports.Name = "rpg_Reports"
+        Me.rpg_Reports.ShowCaptionButton = False
+        Me.rpg_Reports.Text = "Reports"
         '
         'RibbonStatusBar
         '
@@ -267,19 +285,18 @@ Partial Class frm_Main
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
         '
-        'rpg_Reports
+        'btn_Report_Date
         '
-        Me.rpg_Reports.ItemLinks.Add(Me.btn_Report_Percentage)
-        Me.rpg_Reports.Name = "rpg_Reports"
-        Me.rpg_Reports.ShowCaptionButton = False
-        Me.rpg_Reports.Text = "Reports"
+        Me.btn_Report_Date.Caption = "Date Wise"
+        Me.btn_Report_Date.Id = 6
+        Me.btn_Report_Date.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Date.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Report_Date.Name = "btn_Report_Date"
         '
-        'btn_Report_Percentage
+        'dlg_SaveExcel
         '
-        Me.btn_Report_Percentage.Caption = "Percentage"
-        Me.btn_Report_Percentage.Id = 5
-        Me.btn_Report_Percentage.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Percentage.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.btn_Report_Percentage.Name = "btn_Report_Percentage"
+        Me.dlg_SaveExcel.DefaultExt = "xlsx"
+        Me.dlg_SaveExcel.FileName = "Attendance.xlsx"
+        Me.dlg_SaveExcel.Filter = "Excel 2007 Workbooks|*.xlsx"
         '
         'frm_Main
         '
@@ -341,4 +358,6 @@ Partial Class frm_Main
     Friend WithEvents gv_Attendance As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents btn_Report_Percentage As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents rpg_Reports As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents btn_Report_Date As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents dlg_SaveExcel As SaveFileDialog
 End Class
