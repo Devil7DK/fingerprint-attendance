@@ -382,7 +382,7 @@ Partial Public Class report_Consolidated
         '
         'ObjectDataSource1
         '
-        Me.ObjectDataSource1.DataSource = GetType(Students_Attendance_Management_System.Objects.AttendanceConsolidate)
+        Me.ObjectDataSource1.DataSource = GetType(FingerprintAttendanceSystem.Objects.AttendanceConsolidate)
         Me.ObjectDataSource1.Name = "ObjectDataSource1"
         '
         'report_Consolidated

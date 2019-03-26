@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Students Attendance Management System")>
+<Assembly: AssemblyTitle("Fingerprint Attendance System")>
 <Assembly: AssemblyDescription("Simple Students Attendance Management System Designed for Our College Final Year Project - Government Arts College, Coimbatore")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("Students Attendance Management System")>
+<Assembly: AssemblyProduct("Fingerprint Attendance System")>
 <Assembly: AssemblyCopyright("Copyright ©  2019")>
 <Assembly: AssemblyTrademark("")>
 
