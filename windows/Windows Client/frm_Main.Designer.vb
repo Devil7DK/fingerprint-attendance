@@ -19,10 +19,9 @@ Partial Class frm_Main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frm_Main))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu(Me.components)
+        Me.ApplicationMenu = New DevExpress.XtraBars.Ribbon.ApplicationMenu()
         Me.btn_CompactDatabase = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Exit = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
@@ -45,6 +44,8 @@ Partial Class frm_Main
         Me.gc_Attendance = New DevExpress.XtraGrid.GridControl()
         Me.gv_Attendance = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
+        Me.rpg_Reports = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.btn_Report_Percentage = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.tc_Main, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -67,9 +68,9 @@ Partial Class frm_Main
         '
         Me.RibbonControl.ApplicationButtonDropDownControl = Me.ApplicationMenu
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm, Me.btn_CompactDatabase, Me.btn_Exit})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.btn_Refresh, Me.btn_Comm, Me.btn_CompactDatabase, Me.btn_Exit, Me.btn_Report_Percentage})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 5
+        Me.RibbonControl.MaxItemId = 6
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rp_Home})
         Me.RibbonControl.ShowCategoryInCaption = False
@@ -121,7 +122,7 @@ Partial Class frm_Main
         '
         'rp_Home
         '
-        Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database, Me.rpg_Device})
+        Me.rp_Home.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpg_Database, Me.rpg_Device, Me.rpg_Reports})
         Me.rp_Home.Name = "rp_Home"
         Me.rp_Home.Text = "Home"
         '
@@ -266,6 +267,20 @@ Partial Class frm_Main
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
         '
+        'rpg_Reports
+        '
+        Me.rpg_Reports.ItemLinks.Add(Me.btn_Report_Percentage)
+        Me.rpg_Reports.Name = "rpg_Reports"
+        Me.rpg_Reports.ShowCaptionButton = False
+        Me.rpg_Reports.Text = "Reports"
+        '
+        'btn_Report_Percentage
+        '
+        Me.btn_Report_Percentage.Caption = "Percentage"
+        Me.btn_Report_Percentage.Id = 5
+        Me.btn_Report_Percentage.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Percentage.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Report_Percentage.Name = "btn_Report_Percentage"
+        '
         'frm_Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -324,4 +339,6 @@ Partial Class frm_Main
     Friend WithEvents tp_Attendance As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents gc_Attendance As DevExpress.XtraGrid.GridControl
     Friend WithEvents gv_Attendance As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents btn_Report_Percentage As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents rpg_Reports As DevExpress.XtraBars.Ribbon.RibbonPageGroup
 End Class

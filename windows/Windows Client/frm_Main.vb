@@ -321,6 +321,28 @@ Public Class frm_Main
     Private Sub btn_Exit_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_Exit.ItemClick
         Me.Close()
     End Sub
+
+    Private Async Sub btn_Report_Percentage_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_Report_Percentage.ItemClick
+        Await Task.Run(Sub()
+                           Dim D As frm_SelectDate
+                           Dim DialogResult As DialogResult = DialogResult.Cancel
+                           Invoke(Sub()
+                                      Dim D1 As New frm_SelectDate(Courses.ToList)
+                                      DialogResult = D1.ShowDialog
+                                      D = D1
+                                  End Sub)
+                           If DialogResult = DialogResult.OK Then
+                               Invoke(Sub() ShowProgressPanel())
+                               Dim Data As Objects.AttendanceConsolidate = Objects.AttendanceConsolidate.Consolidate(D.DateFrom, D.DateTo, D.Course, D.Year, D.Shift, Students.ToList, Attendances.ToList)
+                               Dim Report As New report_Consolidated(Data)
+                               Invoke(Sub() HideProgressPanel())
+                               Invoke(Sub()
+                                          Dim Viewer As New frm_ReportViewer(Report)
+                                          Viewer.ShowDialog()
+                                      End Sub)
+                           End If
+                       End Sub)
+    End Sub
 #End Region
 
 End Class
