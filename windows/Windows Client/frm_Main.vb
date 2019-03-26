@@ -355,6 +355,7 @@ Public Class frm_Main
         If D.ShowDialog(Me) = DialogResult.OK Then
             If dlg_SaveExcel.ShowDialog(Me) = DialogResult.OK Then
                 Try
+                    ShowProgressPanel()
                     Await Task.Run(Sub()
                                        Dim Data As New Objects.AttendanceDateHour(Students.ToList, Attendances.ToList)
                                        Data.Consolidate(D.DateFrom, D.DateTo, D.Course, D.Year, D.Shift)
@@ -365,6 +366,7 @@ Public Class frm_Main
                                                   End If
                                               End Sub)
                                    End Sub)
+                    HideProgressPanel()
                 Catch ex As Exception
                     DevExpress.XtraEditors.XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End Try
