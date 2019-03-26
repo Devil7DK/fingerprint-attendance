@@ -113,6 +113,12 @@
     <Compile Include="Dialogs\frm_DeviceComm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Dialogs\frm_SelectDate.Designer.vb">
+      <DependentUpon>frm_SelectDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frm_SelectDate.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Dialogs\frm_SelectYearShift.Designer.vb">
       <DependentUpon>frm_SelectYearShift.vb</DependentUpon>
     </Compile>
@@ -155,6 +161,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Dialogs\frm_DeviceComm.resx">
       <DependentUpon>frm_DeviceComm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frm_SelectDate.resx">
+      <DependentUpon>frm_SelectDate.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frm_SelectYearShift.resx">
       <DependentUpon>frm_SelectYearShift.vb</DependentUpon>
