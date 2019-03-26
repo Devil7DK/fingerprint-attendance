@@ -74,7 +74,7 @@
                     TotalHours += 1
 
                     For Each AttendanceItem As Objects.Attendance.Item In Attendance.AttendanceData
-                        If AttendanceItem.AttendanceState = Enums.AttendanceState.Present Then
+                        If AttendanceItem.AttendanceState = Enums.AttendanceState.Present Or AttendanceItem.AttendanceState = Enums.AttendanceState.OnDuty Then
                             Dim Item As Item = Data.Find(Function(c) c.Student.ID = AttendanceItem.StudentID)
                             If Item IsNot Nothing Then
                                 Item.HoursPresent += 1
