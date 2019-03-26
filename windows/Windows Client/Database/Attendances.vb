@@ -30,7 +30,8 @@ Namespace Database
 
                         Dim AttendanceData As BindingList(Of Objects.Attendance.Item) = Utils.Serializer.FromZXML(Of BindingList(Of Objects.Attendance.Item))(If(IsDBNull(Reader.Item("data")), Nothing, CType(Reader.Item("data"), Byte())))
                         For i As Integer = 0 To AttendanceData.Count - 1
-                            Dim Student As Objects.Student = Students.Find(Function(c) c.ID = AttendanceData(i).StudentID)
+                            Dim StudentID As Integer = AttendanceData(i).StudentID
+                            Dim Student As Objects.Student = Students.Find(Function(c) c.ID = StudentID)
                             If Student IsNot Nothing Then
                                 AttendanceData(i).Student = Student
                             End If
