@@ -353,6 +353,7 @@ Public Class frm_Main
     Private Async Sub btn_Report_Date_ItemClick(sender As Object, e As ItemClickEventArgs) Handles btn_Report_Date.ItemClick
         Dim D As New frm_SelectDate(Courses.ToList)
         If D.ShowDialog(Me) = DialogResult.OK Then
+            dlg_SaveExcel.FileName = String.Format("Attendance_{0}_{1}_{2}_{3} to {4}.xlsx", D.Course.ShortName, If(D.Shift = Enums.Shifts.Shift1, "Shift I", "Shift II"), String.Format("{0}-{1}", D.Year.ToString.Substring(2, 2), (D.Year + 3).ToString.Substring(2, 2)), D.DateFrom.ToString("dd-MM-yyyy"), D.DateTo.ToString("dd-MM-yyyy"))
             If dlg_SaveExcel.ShowDialog(Me) = DialogResult.OK Then
                 Try
                     ShowProgressPanel()
