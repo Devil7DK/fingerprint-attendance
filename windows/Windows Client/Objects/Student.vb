@@ -14,10 +14,16 @@ Namespace Objects
         Property Shift As Enums.Shifts
         Property Photo As Image
         <DisplayName("Admitted Year")>
-        Property AdmittedYear As String
+        Property AdmittedYear As Integer
 
         <DisplayName("Finger Print ID")>
         Property FingerPrintID As Integer
+
+        ReadOnly Property RegNo As String
+            Get
+                Return String.Format("{0}{1}{2}{3}", AdmittedYear.ToString.Substring(2, 2), Course.Prefix, If(Shift = Enums.Shifts.Shift1, 0, 1), RollNo.ToString("00"))
+            End Get
+        End Property
 #End Region
 
 #Region "Constructor"
