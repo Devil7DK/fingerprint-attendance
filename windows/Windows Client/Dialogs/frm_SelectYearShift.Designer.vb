@@ -59,8 +59,8 @@ Partial Class frm_SelectYearShift
         Me.txt_Year.Name = "txt_Year"
         Me.txt_Year.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txt_Year.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor
-        Me.txt_Year.Size = New System.Drawing.Size(215, 20)
-        Me.txt_Year.TabIndex = 2
+        Me.txt_Year.Size = New System.Drawing.Size(207, 20)
+        Me.txt_Year.TabIndex = 0
         '
         'txt_Shift
         '
@@ -71,25 +71,25 @@ Partial Class frm_SelectYearShift
         Me.txt_Shift.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txt_Shift.Properties.Items.AddRange(New Object() {"Shift I", "Shift II"})
         Me.txt_Shift.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor
-        Me.txt_Shift.Size = New System.Drawing.Size(215, 20)
-        Me.txt_Shift.TabIndex = 3
+        Me.txt_Shift.Size = New System.Drawing.Size(207, 20)
+        Me.txt_Shift.TabIndex = 1
         '
         'btn_OK
         '
         Me.btn_OK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btn_OK.Location = New System.Drawing.Point(233, 95)
+        Me.btn_OK.Location = New System.Drawing.Point(225, 99)
         Me.btn_OK.Name = "btn_OK"
         Me.btn_OK.Size = New System.Drawing.Size(75, 23)
-        Me.btn_OK.TabIndex = 4
+        Me.btn_OK.TabIndex = 3
         Me.btn_OK.Text = "OK"
         '
         'btn_Cancel
         '
         Me.btn_Cancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btn_Cancel.Location = New System.Drawing.Point(12, 95)
+        Me.btn_Cancel.Location = New System.Drawing.Point(12, 99)
         Me.btn_Cancel.Name = "btn_Cancel"
         Me.btn_Cancel.Size = New System.Drawing.Size(75, 23)
-        Me.btn_Cancel.TabIndex = 5
+        Me.btn_Cancel.TabIndex = 4
         Me.btn_Cancel.Text = "Cancel"
         '
         'lbl_Course
@@ -106,14 +106,14 @@ Partial Class frm_SelectYearShift
         Me.txt_Course.Name = "txt_Course"
         Me.txt_Course.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txt_Course.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor
-        Me.txt_Course.Size = New System.Drawing.Size(215, 20)
-        Me.txt_Course.TabIndex = 7
+        Me.txt_Course.Size = New System.Drawing.Size(207, 20)
+        Me.txt_Course.TabIndex = 2
         '
         'frm_SelectYearShift
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(320, 130)
+        Me.ClientSize = New System.Drawing.Size(312, 133)
         Me.ControlBox = False
         Me.Controls.Add(Me.txt_Course)
         Me.Controls.Add(Me.lbl_Course)
