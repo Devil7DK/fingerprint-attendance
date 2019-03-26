@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Objects\Attendance.vb" />
     <Compile Include="Objects\AttendanceConsolidate.vb" />
+    <Compile Include="Objects\AttendanceDateHour.vb" />
     <Compile Include="Objects\Course.vb" />
     <Compile Include="Objects\Staff.vb" />
     <Compile Include="Objects\Student.vb" />
