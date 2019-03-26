@@ -28,6 +28,7 @@ Partial Class frm_Main
         Me.btn_Refresh = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Comm = New DevExpress.XtraBars.BarButtonItem()
         Me.btn_Report_Percentage = New DevExpress.XtraBars.BarButtonItem()
+        Me.btn_Report_Date = New DevExpress.XtraBars.BarButtonItem()
         Me.rp_Home = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpg_Database = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpg_Device = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -47,7 +48,6 @@ Partial Class frm_Main
         Me.gc_Attendance = New DevExpress.XtraGrid.GridControl()
         Me.gv_Attendance = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.dlg_SelectImage = New System.Windows.Forms.OpenFileDialog()
-        Me.btn_Report_Date = New DevExpress.XtraBars.BarButtonItem()
         Me.dlg_SaveExcel = New System.Windows.Forms.SaveFileDialog()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -129,6 +129,13 @@ Partial Class frm_Main
         Me.btn_Report_Percentage.Id = 5
         Me.btn_Report_Percentage.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Percentage.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.btn_Report_Percentage.Name = "btn_Report_Percentage"
+        '
+        'btn_Report_Date
+        '
+        Me.btn_Report_Date.Caption = "Date Wise"
+        Me.btn_Report_Date.Id = 6
+        Me.btn_Report_Date.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Date.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.btn_Report_Date.Name = "btn_Report_Date"
         '
         'rp_Home
         '
@@ -285,13 +292,6 @@ Partial Class frm_Main
         '
         Me.dlg_SelectImage.Filter = "All Supported Image Files|*.bmp;*.jpg;*.jpeg;*.png"
         '
-        'btn_Report_Date
-        '
-        Me.btn_Report_Date.Caption = "Date Wise"
-        Me.btn_Report_Date.Id = 6
-        Me.btn_Report_Date.ImageOptions.SvgImage = CType(resources.GetObject("btn_Report_Date.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.btn_Report_Date.Name = "btn_Report_Date"
-        '
         'dlg_SaveExcel
         '
         Me.dlg_SaveExcel.DefaultExt = "xlsx"
@@ -306,10 +306,11 @@ Partial Class frm_Main
         Me.Controls.Add(Me.tc_Main)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frm_Main"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "Students Attendance Management System"
+        Me.Text = "Fingerprint Based Students Attendance Management System"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ApplicationMenu, System.ComponentModel.ISupportInitialize).EndInit()
