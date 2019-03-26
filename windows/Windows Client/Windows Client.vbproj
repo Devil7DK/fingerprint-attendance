@@ -171,6 +171,12 @@
     <Compile Include="Objects\Course.vb" />
     <Compile Include="Objects\Staff.vb" />
     <Compile Include="Objects\Student.vb" />
+    <Compile Include="Reports\report_Consolidated.Designer.vb">
+      <DependentUpon>report_Consolidated.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\report_Consolidated.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utils\Compression.vb" />
     <Compile Include="Utils\Serializer.vb" />
     <Compile Include="Utils\XtraFormTemp.vb">
@@ -199,6 +205,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\report_Consolidated.resx">
+      <DependentUpon>report_Consolidated.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
