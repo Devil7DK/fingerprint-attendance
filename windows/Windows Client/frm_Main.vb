@@ -227,6 +227,12 @@ Public Class frm_Main
                                                                            e.RepositoryItem = cmb
                                                                        End If
                                                                    End Sub
+
+            AddHandler CType(e1.View, GridView).RowUpdated, Sub(ByVal s As Object, e As RowEventArgs)
+                                                                If e1.View.SourceRow IsNot Nothing Then
+                                                                    Database.Attendances.Update(CType(e1.View.SourceRow, Objects.Attendance))
+                                                                End If
+                                                            End Sub
         End If
     End Sub
 
