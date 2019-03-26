@@ -60,6 +60,8 @@
             Dim CurrentAttendances As List(Of Attendance) = Attendances.FindAll(Function(c) c.Course.ID = Course.ID AndAlso c.Shift = Shift AndAlso c.Year = Year AndAlso (c.Date >= DateFrom AndAlso c.Date <= DateTo))
             Dim CurrentStudents As List(Of Student) = Students.FindAll(Function(c) c.Course.ID = Course.ID AndAlso c.AdmittedYear = Year AndAlso c.Shift = Shift)
 
+            CurrentStudents.Sort(New Utils.StudentComparer)
+
             Dim Data As New List(Of Item)
             For Each Student As Student In CurrentStudents
                 Data.Add(New Item(Student))
