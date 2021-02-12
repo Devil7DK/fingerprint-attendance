@@ -7,5 +7,8 @@ I used Arduino Mega, Adafruit Fingerprint Sensor & 240x320 TFT Display to create
 
 I wanted to write a more detailed guide with step by step insturctions and images. But unfortunately the person to whom for I made this project didn't gave back the device after finishing their exhibit. So now I am only releasing a small video that I took when making the device & the full arduino & desktop client's source code.
 
-# Demo
+## Diagram
+![circuit-diagram](./diagram.png)
+
+## Demo
 [![Watch the video](https://img.youtube.com/vi/BcBKZeoy-XA/maxresdefault.jpg)](https://youtu.be/BcBKZeoy-XA)
